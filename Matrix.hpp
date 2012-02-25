@@ -1189,4 +1189,186 @@ void CreateTransverseMat( const Matrix4x4 < Type >& in, Matrix4x4 < Type >* pOut
 	pOut->m_44 = in.m_44;
 }
 
+template < typename Type, int ROW, int COLMUN >
+class MatrixNxN : public Matrix < Type >
+{
+public:
+	union
+	{
+		Type		m_Elm[ ROW * COLMUN ];
+		Type		m_Elms[ ROW ][ COLMUN ];
+	};
+	MatrixNxN();
+	~MatrixNxN();
+	MatrixNxN( const MatrixNxN < Type, ROW, COLMUN >& m );
+	MatrixNxN < Type, ROW, COLMUN > operator+( const MatrixNxN < Type, ROW, COLMUN >& m );
+	MatrixNxN < Type, ROW, COLMUN > operator-( const MatrixNxN < Type, ROW, COLMUN >& m );
+	MatrixNxN < Type, ROW, COLMUN > operator*( const MatrixNxN < Type, ROW, COLMUN >& m );
+	MatrixNxN < Type, ROW, COLMUN >& operator=( const MatrixNxN < Type, ROW, COLMUN >& m );
+	bool operator==( const MatrixNxN < Type, ROW, COLMUN >& m );
+	MatrixNxN < Type, ROW, COLMUN >& operator+=( const MatrixNxN < Type, ROW, COLMUN >& m );
+	MatrixNxN < Type, ROW, COLMUN >& operator-=( const MatrixNxN < Type, ROW, COLMUN >& m );
+	MatrixNxN < Type, ROW, COLMUN >& operator*=( const MatrixNxN < Type, ROW, COLMUN >& m );
+	void Add( const MatrixNxN < Type, ROW, COLMUN >& m );
+	void Sub( const MatrixNxN < Type, ROW, COLMUN >& m );
+	void Mul( const MatrixNxN < Type, ROW, COLMUN >& m );
+};
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN > ::MatrixNxN()
+{
+}
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN > ::~MatrixNxN()
+{
+}
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator+( const MatrixNxN < Type, ROW, COLMUN >& m )
+{
+	MatrixNxN < Type, ROW, COLMUN > matTmp;
+
+	for( int row = 0; row < ROW; ++row ){
+		for( int colmun = 0; colmun < COLMUN; ++ colmun ){
+			matTmp.m_Elms[ row ][ colmun ] = this->m_Elms[ row ][ colmun ] + m.m_Elms[ row ][ colmun ];
+		}
+	}
+
+	return matTmp;
+}
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator-( const MatrixNxN < Type, ROW, COLMUN >& m )
+{
+	MatrixNxN < Type, ROW, COLMUN > matTmp;
+
+	for( int row = 0; row < ROW; ++row ){
+		for( int colmun = 0; colmun < COLMUN; ++ colmun ){
+			matTmp.m_Elms[ row ][ colmun ] = this->m_Elms[ row ][ colmun ] - m.m_Elms[ row ][ colmun ];
+		}
+	}
+
+	return matTmp;
+}
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator*( const MatrixNxN < Type, ROW, COLMUN >& m )
+{
+	MatrixNxN < Type, ROW, COLMUN > matTmp;
+
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			for( int i = 0; i < ROW; ++i ){
+				matTmp.m_Elms[ row ][ colmun ] = this->m_Elms[ i ][ colmun ] * m.m_Elms[ row ][ i ];
+			}
+		}
+	}
+
+	return matTmp;
+}
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator=( const MatrixNxN < Type, ROW, COLMUN >& m )
+{
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			m_Elms[ row ][ colmun ] = m.m_Elms[ row ][ colmun ];
+		}
+	}
+
+	return *this;
+}
+
+template < typename Type, int ROW, int COLMUN >
+bool MatrixNxN < Type, ROW, COLMUN >::operator==( const MatrixNxN < Type, ROW, COLMUN >& m )
+{
+	bool result = true;
+
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			if( m_Elms[ row ][ colmun ] != m.m_Elms[ row ][ colmun ] ){
+				result = false;
+				break;
+			}
+		}
+	}
+
+	return result;
+}
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator+=( const MatrixNxN < Type, ROW, COLMUN >& m )
+{
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			m_Elms[ row ][ colmun ] += m.m_Elms[ row ][ colmun ];
+		}
+	}
+
+	return *this;
+}
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator-=( const MatrixNxN < Type, ROW, COLMUN >& m )
+{
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			m_Elms[ row ][ colmun ] -= m.m_Elms[ row ][ colmun ];
+		}
+	}
+
+	return *this;
+}
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator*=( const MatrixNxN < Type, ROW, COLMUN >& m )
+{
+	MatrixNxN matTmp = *this;
+
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			for( int i = 0; i < ROW; ++i ){
+				m_Elms[ row ][ colmun ] = matTmp.m_Elms[ i ][ colmun ] * m.m_Elms[ row ][ i ];
+			}
+		}
+	}
+
+	return *this;
+}
+
+template < typename Type, int ROW, int COLMUN >
+void MatrixNxN < Type, ROW, COLMUN >::Add( const MatrixNxN < Type, ROW, COLMUN >& m )
+{
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			m_Elms[ row ][ colmun ] += m.m_Elms[ row ][ colmun ];
+		}
+	}
+}
+
+template < typename Type, int ROW, int COLMUN >
+void MatrixNxN < Type, ROW, COLMUN >::Sub( const MatrixNxN < Type, ROW, COLMUN >& m )
+{
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			m_Elms[ row ][ colmun ] -= m.m_Elms[ row ][ colmun ];
+		}
+	}
+}
+
+template < typename Type, int ROW, int COLMUN >
+void MatrixNxN < Type, ROW, COLMUN >::Mul( const MatrixNxN < Type, ROW, COLMUN >& m )
+{
+	MatrixNxN matTmp = *this;
+
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			for( int i = 0; i < ROW; ++i ){
+				m_Elms[ row ][ colmun ] = matTmp.m_Elms[ i ][ colmun ] * m.m_Elms[ row ][ i ];
+			}
+		}
+	}
+}
+
 #endif
