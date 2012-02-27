@@ -9,7 +9,6 @@
 
 #include <math.h>
 
-
 template < typename Type >
 class Matrix2x2
 {
@@ -548,7 +547,7 @@ public:
 	//Multiply / Binary operator (Overload of * operator)
 	Matrix4x4& operator*=( const Matrix4x4 < Type >& m );
 	// Multiply / Binary operator ( Overload of * operator ) (2).
-	Matrix4x4& operator*=( MapilFloat32 f );
+	Matrix4x4& operator*=( float f );
 	//Add
 	void Add( const Matrix4x4 < Type >& m );
 	//Subtract
@@ -556,7 +555,7 @@ public:
 	//Multiply
 	void Mul( const Matrix4x4 < Type >& m );
 	// Multiply (2).
-	void Mul( MapilFloat32 f );
+	void Mul( float f );
 
 };
 
@@ -831,7 +830,7 @@ Matrix4x4 < Type >& Matrix4x4 < Type > ::operator*=( const Matrix4x4 < Type >& m
 
 // Multiply / Binary operator ( Overload of * operator ) (2).
 template < typename Type >
-Matrix4x4 < Type >& Matrix4x4 < Type > ::operator*=( MapilFloat32 f )
+Matrix4x4 < Type >& Matrix4x4 < Type > ::operator*=( float f )
 {
 	m_11 *= f;
 	m_12 *= f;
@@ -924,7 +923,7 @@ void Matrix4x4 < Type > ::Mul( const Matrix4x4 < Type >& m )
 
 // Multiply (2).
 template < typename Type >
-void Matrix4x4 < Type > ::Mul( MapilFloat32 f )
+void Matrix4x4 < Type > ::Mul( float f )
 {
 	m_11 *= f;
 	m_12 *= f;
@@ -943,6 +942,10 @@ void Matrix4x4 < Type > ::Mul( MapilFloat32 f )
 	m_43 *= f;
 	m_44 *= f;
 }
+
+
+
+
 
 // Multiply matrix. ( 1 )
 template < typename Type >
@@ -1189,8 +1192,11 @@ void CreateTransverseMat( const Matrix4x4 < Type >& in, Matrix4x4 < Type >* pOut
 	pOut->m_44 = in.m_44;
 }
 
+
+
+
 template < typename Type, int ROW, int COLMUN >
-class MatrixNxN : public Matrix < Type >
+class MatrixNxN
 {
 public:
 	union
@@ -1204,14 +1210,25 @@ public:
 	MatrixNxN < Type, ROW, COLMUN > operator+( const MatrixNxN < Type, ROW, COLMUN >& m );
 	MatrixNxN < Type, ROW, COLMUN > operator-( const MatrixNxN < Type, ROW, COLMUN >& m );
 	MatrixNxN < Type, ROW, COLMUN > operator*( const MatrixNxN < Type, ROW, COLMUN >& m );
+	MatrixNxN < Type, ROW, COLMUN > operator*( Type value );
+	VectorN < Type, ROW > operator*( const VectorN < Type, ROW >& v );
+	MatrixNxN < Type, ROW, COLMUN > operator/( Type value );
 	MatrixNxN < Type, ROW, COLMUN >& operator=( const MatrixNxN < Type, ROW, COLMUN >& m );
 	bool operator==( const MatrixNxN < Type, ROW, COLMUN >& m );
 	MatrixNxN < Type, ROW, COLMUN >& operator+=( const MatrixNxN < Type, ROW, COLMUN >& m );
 	MatrixNxN < Type, ROW, COLMUN >& operator-=( const MatrixNxN < Type, ROW, COLMUN >& m );
 	MatrixNxN < Type, ROW, COLMUN >& operator*=( const MatrixNxN < Type, ROW, COLMUN >& m );
+	MatrixNxN < Type, ROW, COLMUN >& operator*=( Type value );
+	MatrixNxN < Type, ROW, COLMUN >& operator/=( Type value );
 	void Add( const MatrixNxN < Type, ROW, COLMUN >& m );
 	void Sub( const MatrixNxN < Type, ROW, COLMUN >& m );
 	void Mul( const MatrixNxN < Type, ROW, COLMUN >& m );
+	void Mul( Type value );
+	void Div( Type value );
+	void Set( int index, Type value );
+	void Set( int row, int colmun, Type value );
+	Type Get( int index ) const;
+	Type Get( int row, int colmun ) const;
 };
 
 template < typename Type, int ROW, int COLMUN >
@@ -1262,6 +1279,48 @@ MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator*( cons
 			for( int i = 0; i < ROW; ++i ){
 				matTmp.m_Elms[ row ][ colmun ] = this->m_Elms[ i ][ colmun ] * m.m_Elms[ row ][ i ];
 			}
+		}
+	}
+
+	return matTmp;
+}
+
+template < typename Type, int ROW, int COLMUN >
+VectorN < Type, ROW > MatrixNxN < Type, ROW, COLMUN >::operator*( const VectorN < Type, ROW >& v )
+{
+	VectorN < Type, ROW > vTmp;
+
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			vTmp.m_Elm[ colmun ] = m_Elms[ colmun ][ row ] * v.m_Elm[ row ];
+		}
+	}
+
+	return vTmp;
+}
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator*( Type value )
+{
+	MatrixNxN < Type, ROW, COLMUN > matTmp;
+
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			matTmp.m_Elms[ row ][ colmun ] *= value;
+		}
+	}
+
+	return matTmp;
+}
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator/( Type value )
+{
+	MatrixNxN < Type, ROW, COLMUN > matTmp;
+
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			matTmp.m_Elms[ row ][ colmun ] /= value;
 		}
 	}
 
@@ -1338,6 +1397,30 @@ MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator*=( co
 }
 
 template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator*=( Type value )
+{
+	for( int row = 0; row < ROW; ++row ){
+		for( int colmun = 0; colmun < COLMUN; ++colmun ){
+			m_Elms[ row ][ colmun ] *= value;
+		}
+	}
+
+	return *this;
+}
+
+template < typename Type, int ROW, int COLMUN >
+MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator/=( Type value )
+{
+	for( int row = 0; row < ROW; ++row ){
+		for( int colmun = 0; colmun < COLMUN; ++colmun ){
+			m_Elms[ row ][ colmun ] /= value;
+		}
+	}
+
+	return *this;
+}
+
+template < typename Type, int ROW, int COLMUN >
 void MatrixNxN < Type, ROW, COLMUN >::Add( const MatrixNxN < Type, ROW, COLMUN >& m )
 {
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
@@ -1369,6 +1452,51 @@ void MatrixNxN < Type, ROW, COLMUN >::Mul( const MatrixNxN < Type, ROW, COLMUN >
 			}
 		}
 	}
+}
+
+template < typename Type, int ROW, int COLMUN >
+void MatrixNxN < Type, ROW, COLMUN >::Mul( Type value )
+{
+	for( int row = 0; row < ROW; ++row ){
+		for( int colmun = 0; colmun < COLMUN; ++colmun ){
+			m_Elms[ row ][ colmun ] *= value;
+		}
+	}
+}
+
+template < typename Type, int ROW, int COLMUN >
+void MatrixNxN < Type, ROW, COLMUN >::Div( Type value )
+{
+	for( int row = 0; row < ROW; ++row ){
+		for( int colmun = 0; colmun < COLMUN; ++colmun ){
+			m_Elms[ row ][ colmun ] /= value;
+		}
+	}
+}
+
+template < typename Type, int ROW, int COLMUN >
+void MatrixNxN < Type, ROW, COLMUN >::Set( int index, Type value )
+{
+	m_Elm[ index ] = value;
+}
+
+template < typename Type, int ROW, int COLMUN >
+void MatrixNxN < Type, ROW, COLMUN >::Set( int row, int colmun, Type value )
+{
+	m_Elms[ row ][ colmun ] = value;
+}
+
+template < typename Type, int ROW, int COLMUN >
+Type MatrixNxN < Type, ROW, COLMUN >::Get( int index ) const
+{
+	return m_Elm[ index ];
+}
+
+template < typename Type, int ROW, int COLMUN >
+Type MatrixNxN < Type, ROW, COLMUN >::Get( int row, int colmun ) const
+{
+	return m_Elms[ row ][ colmun ];
+}
 }
 
 #endif
