@@ -7,11 +7,9 @@
 #ifndef INCLUDED_VECTOR_HPP
 #define INCLUDED_VECTOR_HPP
 
-#include "Point.hpp"
-#include "../Type.h"
 
 template < typename Type >
-class Vector2 Point2 < Type >
+class Vector2
 {
 public:
 	union
@@ -222,7 +220,7 @@ Type Vector2 < Type > ::GetOuterProduct( const Vector2 < Type >& v ) const
 }
 
 template < typename Type >
-class Vector3 Point3 < Type >
+class Vector3
 {
 public:
 	union
@@ -537,7 +535,7 @@ Vector3 < Type > Vector3 < Type > ::GetOuterProduct( const Vector3 < Type >& v )
 }
 
 template < typename Type >
-class Vector4 Point4 < Type >
+class Vector4
 {
 public:
 	union

@@ -8,6 +8,38 @@
 #define INCLUDED_MATRIX_HPP
 
 #include <math.h>
+#include "Vector.hpp"
+
+template < typename Type >
+class Matrix
+{
+public:
+	Matrix();
+	Matrix( const Matrix < Type >& m );
+	virtual Matrix& operator=( const Matrix < Type >& m );
+	virtual ~Matrix();
+};
+
+template < typename Type >
+Matrix < Type >::Matrix()
+{
+}
+
+template < typename Type >
+Matrix < Type >::Matrix( const Matrix < Type >& m )
+{
+}
+
+template < typename Type >
+Matrix < Type >& Matrix < Type >::operator=( const Matrix < Type >& m )
+{
+	return *this;
+}
+
+template < typename Type >
+Matrix < Type >::~Matrix()
+{
+}
 
 template < typename Type >
 class Matrix2x2
@@ -1496,7 +1528,6 @@ template < typename Type, int ROW, int COLMUN >
 Type MatrixNxN < Type, ROW, COLMUN >::Get( int row, int colmun ) const
 {
 	return m_Elms[ row ][ colmun ];
-}
 }
 
 #endif
