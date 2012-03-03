@@ -110,16 +110,6 @@ Vector2 < Type > Vector2 < Type > ::operator-( const Vector2 < Type >& v )
 	return vTmp;
 }
 
-//Substitute (Overload of = operator)
-//template < typename Type >
-//Vector2 < Type >& Vector2 < Type > ::operator=( const Vector2 < Type >& v )
-//{
-//	m_X = v.m_X;
-//	m_Y = v.m_Y;
-
-//		return *this;
-//}
-
 //Equivalence (Overload of == operator)
 template < typename Type >
 bool Vector2 < Type > ::operator==( const Vector2 < Type >& v )
@@ -652,20 +642,6 @@ Vector4 < Type >& Vector4 < Type > ::operator=( const Vector4 < Type >& v )
 	return *this;
 }
 
-// Multiply / Ternary operator ( Overload of * operator ).
-//template < typename Type >
-//Vector4 < Type >& Vector4 < Type > ::operator*( const Matrix4x4 < Type >& m )
-//{
-//	Vector4 < Type > vTmp = *this;
-
-//	m_X = vTmp.m_X * m.m_11 + vTmp.m_Y * m.m_21 + vTmp.m_Z * m.m_31 + vTmp.m_W * m.m_41;
-//	m_Y = vTmp.m_X * m.m_12 + vTmp.m_Y * m.m_22 + vTmp.m_Z * m.m_32 + vTmp.m_W * m.m_42;
-//	m_Z = vTmp.m_X * m.m_13 + vTmp.m_Y * m.m_23 + vTmp.m_Z * m.m_33 + vTmp.m_W * m.m_43;
-//	m_W = vTmp.m_X * m.m_14 + vTmp.m_Y * m.m_24 + vTmp.m_Z * m.m_34 + vTmp.m_W * m.m_44;
-
-//	return *this;
-//}
-
 //Equivalence (Overload of == operator)
 template < typename Type >
 bool Vector4 < Type > ::operator==( const Vector4 < Type >& v )
@@ -760,45 +736,36 @@ Type Vector4 < Type > ::GetInnerProduct( const Vector4 < Type >& v ) const
 	return ( m_X * v.m_X + m_Y * v.m_Y + m_Z * v.m_Z + m_W * v.m_W );
 }
 
-// Rotate X. ( Right-handed system. )
-//		template < typename Type >
-//		Portabillity::PortVoid RotateXRH(	Vector3 < Type >* pOutV,
-//									const Vector3 < Type >& inV,
-//									float angle )
-//		{
-////	pOutV->m_X = inV
-//		}
-
 
 template < typename Type, int DIM >
-class VectorN
+class Vector
 {
 public:
 	Type			m_Elm[ DIM ];
-	VectorN();
-	VectorN( const VectorN < Type, DIM >& v );
-	~VectorN();
+	Vector();
+	Vector( const Vector < Type, DIM >& v );
+	~Vector();
 	//Add / Ternary operator (Overload of + operator)
-	VectorN < Type, DIM > operator+( const VectorN < Type, DIM >& v );
+	Vector < Type, DIM > operator+( const Vector < Type, DIM >& v );
 	//Subtract / Ternary operator (Overload of - operator)
-	VectorN < Type, DIM > operator-( const VectorN < Type, DIM >& v );
+	Vector < Type, DIM > operator-( const Vector < Type, DIM >& v );
 	//Substitute (Overload of = operator)
-	VectorN < Type, DIM >& operator=( const VectorN < Type, DIM >& v );
+	Vector < Type, DIM >& operator=( const Vector < Type, DIM >& v );
 	// Multiply / Ternary operator ( Overload of * operator ).
-	VectorN < Type, DIM > operator*( Type value );
-	VectorN < Type, DIM > operator/( Type value );
+	Vector < Type, DIM > operator*( Type value );
+	Vector < Type, DIM > operator/( Type value );
 	//Equivalence (Overload of == operator)
-	bool operator==( const VectorN < Type, DIM >& v );
+	bool operator==( const Vector < Type, DIM >& v );
 	//Add / Binary operator (Overload of += operator)
-	VectorN < Type, DIM >& operator+=( const VectorN < Type, DIM >& v );
+	Vector < Type, DIM >& operator+=( const Vector < Type, DIM >& v );
 	//Subtract / Binary operator (Overload of -= operator)
-	VectorN < Type, DIM >& operator-=( const VectorN < Type, DIM >& v );
-	VectorN < Type, DIM >& operator*=( Type value );
-	VectorN < Type, DIM >& operator/=( Type value );
+	Vector < Type, DIM >& operator-=( const Vector < Type, DIM >& v );
+	Vector < Type, DIM >& operator*=( Type value );
+	Vector < Type, DIM >& operator/=( Type value );
 	//Add
-	void Add( const VectorN < Type, DIM >& v );
+	void Add( const Vector < Type, DIM >& v );
 	//Subtract
-	void Sub( const VectorN < Type, DIM >& v );
+	void Sub( const Vector < Type, DIM >& v );
 	//Multiply constant
 	void Mul( Type num );
 	void Div( Type num );
@@ -809,11 +776,11 @@ public:
 	//Normalize
 	void Normalize();
 	//Get inner product
-	Type GetInnerProduct( const VectorN < Type, DIM >& v ) const;
+	Type GetInnerProduct( const Vector < Type, DIM >& v ) const;
 };
 
 template < typename Type, int DIM >
-VectorN < Type, DIM > ::VectorN()
+Vector < Type, DIM > ::Vector()
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] = 0;
@@ -821,7 +788,7 @@ VectorN < Type, DIM > ::VectorN()
 }
 
 template < typename Type, int DIM >
-VectorN < Type, DIM > ::VectorN( const VectorN < Type, DIM >& v )
+Vector < Type, DIM > ::Vector( const Vector < Type, DIM >& v )
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] = v.m_Elm[ elm ];
@@ -829,7 +796,7 @@ VectorN < Type, DIM > ::VectorN( const VectorN < Type, DIM >& v )
 }
 
 template < typename Type, int DIM >
-VectorN < Type, DIM > ::~VectorN()
+Vector < Type, DIM > ::~Vector()
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] = 0;
@@ -838,9 +805,9 @@ VectorN < Type, DIM > ::~VectorN()
 
 //Add / Ternary operator (Overload of + operator)
 template < typename Type, int DIM >
-VectorN < Type, DIM > VectorN < Type, DIM > ::operator+( const VectorN < Type, DIM >& v )
+Vector < Type, DIM > Vector < Type, DIM > ::operator+( const Vector < Type, DIM >& v )
 {
-	VectorN < Type, DIM > vTmp;
+	Vector < Type, DIM > vTmp;
 
 	for( int elm = 0; elm < DIM; ++elm ){
 		vTmp.m_Elm[ elm ] = m_Elm[ elm ] + v.m_Elm[ elm ];
@@ -851,9 +818,9 @@ VectorN < Type, DIM > VectorN < Type, DIM > ::operator+( const VectorN < Type, D
 
 //Subtract / Ternary operator (Overload of - operator)
 template < typename Type, int DIM >
-VectorN < Type, DIM > VectorN < Type, DIM > ::operator-( const VectorN < Type, DIM >& v )
+Vector < Type, DIM > Vector < Type, DIM > ::operator-( const Vector < Type, DIM >& v )
 {
-	VectorN < Type, DIM > vTmp;
+	Vector < Type, DIM > vTmp;
 
 	for( int elm = 0; elm < DIM; ++elm ){
 		vTmp.m_Elm[ elm ] = m_Elm[ elm ] - v.m_Elm[ elm ];
@@ -863,9 +830,9 @@ VectorN < Type, DIM > VectorN < Type, DIM > ::operator-( const VectorN < Type, D
 }
 
 template < typename Type, int DIM >
-VectorN < Type, DIM > VectorN < Type, DIM > ::operator*( Type value )
+Vector < Type, DIM > Vector < Type, DIM > ::operator*( Type value )
 {
-	VectorN < Type, DIM > vTmp;
+	Vector < Type, DIM > vTmp;
 
 	for( int elm = 0; elm < DIM; ++elm ){
 		vTmp.m_Elm[ elm ] = m_Elm[ elm ] * value;
@@ -875,9 +842,9 @@ VectorN < Type, DIM > VectorN < Type, DIM > ::operator*( Type value )
 }
 
 template < typename Type, int DIM >
-VectorN < Type, DIM > VectorN < Type, DIM > ::operator/( Type value )
+Vector < Type, DIM > Vector < Type, DIM > ::operator/( Type value )
 {
-	VectorN < Type, DIM > vTmp;
+	Vector < Type, DIM > vTmp;
 
 	for( int elm = 0; elm < DIM; ++elm ){
 		vTmp.m_Elm[ elm ] = m_Elm[ elm ] / value;
@@ -888,7 +855,7 @@ VectorN < Type, DIM > VectorN < Type, DIM > ::operator/( Type value )
 
 //Substitute (Overload of = operator)
 template < typename Type, int DIM >
-VectorN < Type, DIM >& VectorN < Type, DIM > ::operator=( const VectorN < Type, DIM >& v )
+Vector < Type, DIM >& Vector < Type, DIM > ::operator=( const Vector < Type, DIM >& v )
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] = v.m_Elm[ elm ];
@@ -898,7 +865,7 @@ VectorN < Type, DIM >& VectorN < Type, DIM > ::operator=( const VectorN < Type, 
 }
 
 template < typename Type, int DIM >
-bool VectorN < Type, DIM > ::operator==( const VectorN < Type, DIM >& v )
+bool Vector < Type, DIM > ::operator==( const Vector < Type, DIM >& v )
 {
 	bool result = true;
 
@@ -914,7 +881,7 @@ bool VectorN < Type, DIM > ::operator==( const VectorN < Type, DIM >& v )
 
 //Add / Binary operator (Overload of += operator)
 template < typename Type, int DIM >
-VectorN < Type, DIM >& VectorN < Type, DIM > ::operator+=( const VectorN < Type, DIM >& v )
+Vector < Type, DIM >& Vector < Type, DIM > ::operator+=( const Vector < Type, DIM >& v )
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] += v.m_Elm[ elm ];
@@ -925,7 +892,7 @@ VectorN < Type, DIM >& VectorN < Type, DIM > ::operator+=( const VectorN < Type,
 
 //Subtract / Binary operator (Overload of -= operator)
 template < typename Type, int DIM >
-VectorN < Type, DIM >& VectorN < Type, DIM > ::operator-=( const VectorN < Type, DIM >& v )
+Vector < Type, DIM >& Vector < Type, DIM > ::operator-=( const Vector < Type, DIM >& v )
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] -= v.m_Elm[ elm ];
@@ -935,7 +902,7 @@ VectorN < Type, DIM >& VectorN < Type, DIM > ::operator-=( const VectorN < Type,
 }
 
 template < typename Type, int DIM >
-VectorN < Type, DIM >& VectorN < Type, DIM > ::operator*=( Type value )
+Vector < Type, DIM >& Vector < Type, DIM > ::operator*=( Type value )
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] *= value;
@@ -945,7 +912,7 @@ VectorN < Type, DIM >& VectorN < Type, DIM > ::operator*=( Type value )
 }
 
 template < typename Type, int DIM >
-VectorN < Type, DIM >& VectorN < Type, DIM > ::operator/=( Type value )
+Vector < Type, DIM >& Vector < Type, DIM > ::operator/=( Type value )
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] /= value;
@@ -956,7 +923,7 @@ VectorN < Type, DIM >& VectorN < Type, DIM > ::operator/=( Type value )
 
 //Add
 template < typename Type, int DIM >
-void VectorN < Type, DIM > ::Add( const VectorN < Type, DIM >& v )
+void Vector < Type, DIM > ::Add( const Vector < Type, DIM >& v )
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] += v.m_Elm[ elm ];
@@ -965,7 +932,7 @@ void VectorN < Type, DIM > ::Add( const VectorN < Type, DIM >& v )
 
 //Subtract
 template < typename Type, int DIM >
-void VectorN < Type, DIM > ::Sub( const VectorN < Type, DIM >& v )
+void Vector < Type, DIM > ::Sub( const Vector < Type, DIM >& v )
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] -= v.m_Elm[ elm ];
@@ -974,7 +941,7 @@ void VectorN < Type, DIM > ::Sub( const VectorN < Type, DIM >& v )
 
 //Multiply constant
 template < typename Type, int DIM >
-void VectorN < Type, DIM > ::Mul( Type num )
+void Vector < Type, DIM > ::Mul( Type num )
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] *= num;
@@ -982,7 +949,7 @@ void VectorN < Type, DIM > ::Mul( Type num )
 }
 
 template < typename Type, int DIM >
-void VectorN < Type, DIM > ::Div( Type num )
+void Vector < Type, DIM > ::Div( Type num )
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] /= num;
@@ -991,7 +958,7 @@ void VectorN < Type, DIM > ::Div( Type num )
 
 //Get sum of square
 template < typename Type, int DIM >
-Type VectorN < Type, DIM > ::GetSumSquare() const
+Type Vector < Type, DIM > ::GetSumSquare() const
 {
 	Type result = 0;
 
@@ -1004,14 +971,14 @@ Type VectorN < Type, DIM > ::GetSumSquare() const
 
 //Get norm
 template < typename Type, int DIM >
-Type VectorN < Type, DIM > ::GetNorm() const
+Type Vector < Type, DIM > ::GetNorm() const
 {
 	return ::sqrt( GetSumSquare() );
 }
 
 //Normalize
 template < typename Type, int DIM >
-void VectorN < Type, DIM > ::Normalize()
+void Vector < Type, DIM > ::Normalize()
 {
 	Type norm = GetNorm();
 
@@ -1022,7 +989,7 @@ void VectorN < Type, DIM > ::Normalize()
 
 //Get inner product
 template < typename Type, int DIM >
-Type VectorN < Type, DIM > ::GetInnerProduct( const VectorN < Type, DIM >& v ) const
+Type Vector < Type, DIM > ::GetInnerProduct( const Vector < Type, DIM >& v ) const
 {
 	Type result = 0;
 
@@ -1033,6 +1000,12 @@ Type VectorN < Type, DIM > ::GetInnerProduct( const VectorN < Type, DIM >& v ) c
 	return result;
 }
 
+typedef Vector < float, 2 >	Vector2f;
+typedef Vector < double, 2 >	Vector2d;
+typedef Vector < float, 3 >	Vector3f;
+typedef Vector < double, 3 >	Vector3d;
+typedef Vector < float, 4 >	Vector4f;
+typedef Vector < double, 4 >	Vector4d;
 
 template < typename Type >
 Type CalcDeterminant(	const Vector3 < Type >& v0,

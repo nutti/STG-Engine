@@ -10,36 +10,6 @@
 #include <math.h>
 #include "Vector.hpp"
 
-template < typename Type >
-class Matrix
-{
-public:
-	Matrix();
-	Matrix( const Matrix < Type >& m );
-	virtual Matrix& operator=( const Matrix < Type >& m );
-	virtual ~Matrix();
-};
-
-template < typename Type >
-Matrix < Type >::Matrix()
-{
-}
-
-template < typename Type >
-Matrix < Type >::Matrix( const Matrix < Type >& m )
-{
-}
-
-template < typename Type >
-Matrix < Type >& Matrix < Type >::operator=( const Matrix < Type >& m )
-{
-	return *this;
-}
-
-template < typename Type >
-Matrix < Type >::~Matrix()
-{
-}
 
 template < typename Type >
 class Matrix2x2
@@ -1228,7 +1198,7 @@ void CreateTransverseMat( const Matrix4x4 < Type >& in, Matrix4x4 < Type >* pOut
 
 
 template < typename Type, int ROW, int COLMUN >
-class MatrixNxN
+class Matrix
 {
 public:
 	union
@@ -1236,25 +1206,25 @@ public:
 		Type		m_Elm[ ROW * COLMUN ];
 		Type		m_Elms[ ROW ][ COLMUN ];
 	};
-	MatrixNxN();
-	~MatrixNxN();
-	MatrixNxN( const MatrixNxN < Type, ROW, COLMUN >& m );
-	MatrixNxN < Type, ROW, COLMUN > operator+( const MatrixNxN < Type, ROW, COLMUN >& m );
-	MatrixNxN < Type, ROW, COLMUN > operator-( const MatrixNxN < Type, ROW, COLMUN >& m );
-	MatrixNxN < Type, ROW, COLMUN > operator*( const MatrixNxN < Type, ROW, COLMUN >& m );
-	MatrixNxN < Type, ROW, COLMUN > operator*( Type value );
-	VectorN < Type, ROW > operator*( const VectorN < Type, ROW >& v );
-	MatrixNxN < Type, ROW, COLMUN > operator/( Type value );
-	MatrixNxN < Type, ROW, COLMUN >& operator=( const MatrixNxN < Type, ROW, COLMUN >& m );
-	bool operator==( const MatrixNxN < Type, ROW, COLMUN >& m );
-	MatrixNxN < Type, ROW, COLMUN >& operator+=( const MatrixNxN < Type, ROW, COLMUN >& m );
-	MatrixNxN < Type, ROW, COLMUN >& operator-=( const MatrixNxN < Type, ROW, COLMUN >& m );
-	MatrixNxN < Type, ROW, COLMUN >& operator*=( const MatrixNxN < Type, ROW, COLMUN >& m );
-	MatrixNxN < Type, ROW, COLMUN >& operator*=( Type value );
-	MatrixNxN < Type, ROW, COLMUN >& operator/=( Type value );
-	void Add( const MatrixNxN < Type, ROW, COLMUN >& m );
-	void Sub( const MatrixNxN < Type, ROW, COLMUN >& m );
-	void Mul( const MatrixNxN < Type, ROW, COLMUN >& m );
+	Matrix();
+	~Matrix();
+	Matrix( const Matrix < Type, ROW, COLMUN >& m );
+	Matrix < Type, ROW, COLMUN > operator+( const Matrix < Type, ROW, COLMUN >& m );
+	Matrix < Type, ROW, COLMUN > operator-( const Matrix < Type, ROW, COLMUN >& m );
+	Matrix < Type, ROW, COLMUN > operator*( const Matrix < Type, ROW, COLMUN >& m );
+	Matrix < Type, ROW, COLMUN > operator*( Type value );
+	Vector < Type, ROW > operator*( const Vector < Type, ROW >& v );
+	Matrix < Type, ROW, COLMUN > operator/( Type value );
+	Matrix < Type, ROW, COLMUN >& operator=( const Matrix < Type, ROW, COLMUN >& m );
+	bool operator==( const Matrix < Type, ROW, COLMUN >& m );
+	Matrix < Type, ROW, COLMUN >& operator+=( const Matrix < Type, ROW, COLMUN >& m );
+	Matrix < Type, ROW, COLMUN >& operator-=( const Matrix < Type, ROW, COLMUN >& m );
+	Matrix < Type, ROW, COLMUN >& operator*=( const Matrix < Type, ROW, COLMUN >& m );
+	Matrix < Type, ROW, COLMUN >& operator*=( Type value );
+	Matrix < Type, ROW, COLMUN >& operator/=( Type value );
+	void Add( const Matrix < Type, ROW, COLMUN >& m );
+	void Sub( const Matrix < Type, ROW, COLMUN >& m );
+	void Mul( const Matrix < Type, ROW, COLMUN >& m );
 	void Mul( Type value );
 	void Div( Type value );
 	void Set( int index, Type value );
@@ -1264,19 +1234,29 @@ public:
 };
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN > ::MatrixNxN()
+Matrix < Type, ROW, COLMUN > ::Matrix()
 {
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN > ::~MatrixNxN()
+Matrix < Type, ROW, COLMUN > ::~Matrix()
 {
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator+( const MatrixNxN < Type, ROW, COLMUN >& m )
+Matrix < Type, ROW, COLMUN > ::Matrix( const Matrix < Type, ROW, COLMUN >& m )
 {
-	MatrixNxN < Type, ROW, COLMUN > matTmp;
+	for( int colmun = 0; colmun < COLMUN; ++colmun ){
+		for( int row = 0; row < ROW; ++row ){
+			m_Elms[ row ][ colmun ] = m.m_Elms[ row ][ colmun ];
+		}
+	}
+}
+
+template < typename Type, int ROW, int COLMUN >
+Matrix < Type, ROW, COLMUN > Matrix < Type, ROW, COLMUN >::operator+( const Matrix < Type, ROW, COLMUN >& m )
+{
+	Matrix < Type, ROW, COLMUN > matTmp;
 
 	for( int row = 0; row < ROW; ++row ){
 		for( int colmun = 0; colmun < COLMUN; ++ colmun ){
@@ -1288,9 +1268,9 @@ MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator+( cons
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator-( const MatrixNxN < Type, ROW, COLMUN >& m )
+Matrix < Type, ROW, COLMUN > Matrix < Type, ROW, COLMUN >::operator-( const Matrix < Type, ROW, COLMUN >& m )
 {
-	MatrixNxN < Type, ROW, COLMUN > matTmp;
+	Matrix < Type, ROW, COLMUN > matTmp;
 
 	for( int row = 0; row < ROW; ++row ){
 		for( int colmun = 0; colmun < COLMUN; ++ colmun ){
@@ -1302,9 +1282,9 @@ MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator-( cons
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator*( const MatrixNxN < Type, ROW, COLMUN >& m )
+Matrix < Type, ROW, COLMUN > Matrix < Type, ROW, COLMUN >::operator*( const Matrix < Type, ROW, COLMUN >& m )
 {
-	MatrixNxN < Type, ROW, COLMUN > matTmp;
+	Matrix < Type, ROW, COLMUN > matTmp;
 
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
 		for( int row = 0; row < ROW; ++row ){
@@ -1318,9 +1298,9 @@ MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator*( cons
 }
 
 template < typename Type, int ROW, int COLMUN >
-VectorN < Type, ROW > MatrixNxN < Type, ROW, COLMUN >::operator*( const VectorN < Type, ROW >& v )
+Vector < Type, ROW > Matrix < Type, ROW, COLMUN >::operator*( const Vector < Type, ROW >& v )
 {
-	VectorN < Type, ROW > vTmp;
+	Vector < Type, ROW > vTmp;
 
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
 		for( int row = 0; row < ROW; ++row ){
@@ -1332,9 +1312,9 @@ VectorN < Type, ROW > MatrixNxN < Type, ROW, COLMUN >::operator*( const VectorN 
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator*( Type value )
+Matrix < Type, ROW, COLMUN > Matrix < Type, ROW, COLMUN >::operator*( Type value )
 {
-	MatrixNxN < Type, ROW, COLMUN > matTmp;
+	Matrix < Type, ROW, COLMUN > matTmp;
 
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
 		for( int row = 0; row < ROW; ++row ){
@@ -1346,9 +1326,9 @@ MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator*( Type
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator/( Type value )
+Matrix < Type, ROW, COLMUN > Matrix < Type, ROW, COLMUN >::operator/( Type value )
 {
-	MatrixNxN < Type, ROW, COLMUN > matTmp;
+	Matrix < Type, ROW, COLMUN > matTmp;
 
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
 		for( int row = 0; row < ROW; ++row ){
@@ -1360,7 +1340,7 @@ MatrixNxN < Type, ROW, COLMUN > MatrixNxN < Type, ROW, COLMUN >::operator/( Type
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator=( const MatrixNxN < Type, ROW, COLMUN >& m )
+Matrix < Type, ROW, COLMUN >& Matrix < Type, ROW, COLMUN >::operator=( const Matrix < Type, ROW, COLMUN >& m )
 {
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
 		for( int row = 0; row < ROW; ++row ){
@@ -1372,7 +1352,7 @@ MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator=( con
 }
 
 template < typename Type, int ROW, int COLMUN >
-bool MatrixNxN < Type, ROW, COLMUN >::operator==( const MatrixNxN < Type, ROW, COLMUN >& m )
+bool Matrix < Type, ROW, COLMUN >::operator==( const Matrix < Type, ROW, COLMUN >& m )
 {
 	bool result = true;
 
@@ -1389,7 +1369,7 @@ bool MatrixNxN < Type, ROW, COLMUN >::operator==( const MatrixNxN < Type, ROW, C
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator+=( const MatrixNxN < Type, ROW, COLMUN >& m )
+Matrix < Type, ROW, COLMUN >& Matrix < Type, ROW, COLMUN >::operator+=( const Matrix < Type, ROW, COLMUN >& m )
 {
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
 		for( int row = 0; row < ROW; ++row ){
@@ -1401,7 +1381,7 @@ MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator+=( co
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator-=( const MatrixNxN < Type, ROW, COLMUN >& m )
+Matrix < Type, ROW, COLMUN >& Matrix < Type, ROW, COLMUN >::operator-=( const Matrix < Type, ROW, COLMUN >& m )
 {
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
 		for( int row = 0; row < ROW; ++row ){
@@ -1413,9 +1393,9 @@ MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator-=( co
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator*=( const MatrixNxN < Type, ROW, COLMUN >& m )
+Matrix < Type, ROW, COLMUN >& Matrix < Type, ROW, COLMUN >::operator*=( const Matrix < Type, ROW, COLMUN >& m )
 {
-	MatrixNxN matTmp = *this;
+	Matrix matTmp = *this;
 
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
 		for( int row = 0; row < ROW; ++row ){
@@ -1429,7 +1409,7 @@ MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator*=( co
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator*=( Type value )
+Matrix < Type, ROW, COLMUN >& Matrix < Type, ROW, COLMUN >::operator*=( Type value )
 {
 	for( int row = 0; row < ROW; ++row ){
 		for( int colmun = 0; colmun < COLMUN; ++colmun ){
@@ -1441,7 +1421,7 @@ MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator*=( Ty
 }
 
 template < typename Type, int ROW, int COLMUN >
-MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator/=( Type value )
+Matrix < Type, ROW, COLMUN >& Matrix < Type, ROW, COLMUN >::operator/=( Type value )
 {
 	for( int row = 0; row < ROW; ++row ){
 		for( int colmun = 0; colmun < COLMUN; ++colmun ){
@@ -1453,7 +1433,7 @@ MatrixNxN < Type, ROW, COLMUN >& MatrixNxN < Type, ROW, COLMUN >::operator/=( Ty
 }
 
 template < typename Type, int ROW, int COLMUN >
-void MatrixNxN < Type, ROW, COLMUN >::Add( const MatrixNxN < Type, ROW, COLMUN >& m )
+void Matrix < Type, ROW, COLMUN >::Add( const Matrix < Type, ROW, COLMUN >& m )
 {
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
 		for( int row = 0; row < ROW; ++row ){
@@ -1463,7 +1443,7 @@ void MatrixNxN < Type, ROW, COLMUN >::Add( const MatrixNxN < Type, ROW, COLMUN >
 }
 
 template < typename Type, int ROW, int COLMUN >
-void MatrixNxN < Type, ROW, COLMUN >::Sub( const MatrixNxN < Type, ROW, COLMUN >& m )
+void Matrix < Type, ROW, COLMUN >::Sub( const Matrix < Type, ROW, COLMUN >& m )
 {
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
 		for( int row = 0; row < ROW; ++row ){
@@ -1473,9 +1453,9 @@ void MatrixNxN < Type, ROW, COLMUN >::Sub( const MatrixNxN < Type, ROW, COLMUN >
 }
 
 template < typename Type, int ROW, int COLMUN >
-void MatrixNxN < Type, ROW, COLMUN >::Mul( const MatrixNxN < Type, ROW, COLMUN >& m )
+void Matrix < Type, ROW, COLMUN >::Mul( const Matrix < Type, ROW, COLMUN >& m )
 {
-	MatrixNxN matTmp = *this;
+	Matrix matTmp = *this;
 
 	for( int colmun = 0; colmun < COLMUN; ++colmun ){
 		for( int row = 0; row < ROW; ++row ){
@@ -1487,7 +1467,7 @@ void MatrixNxN < Type, ROW, COLMUN >::Mul( const MatrixNxN < Type, ROW, COLMUN >
 }
 
 template < typename Type, int ROW, int COLMUN >
-void MatrixNxN < Type, ROW, COLMUN >::Mul( Type value )
+void Matrix < Type, ROW, COLMUN >::Mul( Type value )
 {
 	for( int row = 0; row < ROW; ++row ){
 		for( int colmun = 0; colmun < COLMUN; ++colmun ){
@@ -1497,7 +1477,7 @@ void MatrixNxN < Type, ROW, COLMUN >::Mul( Type value )
 }
 
 template < typename Type, int ROW, int COLMUN >
-void MatrixNxN < Type, ROW, COLMUN >::Div( Type value )
+void Matrix < Type, ROW, COLMUN >::Div( Type value )
 {
 	for( int row = 0; row < ROW; ++row ){
 		for( int colmun = 0; colmun < COLMUN; ++colmun ){
@@ -1507,27 +1487,35 @@ void MatrixNxN < Type, ROW, COLMUN >::Div( Type value )
 }
 
 template < typename Type, int ROW, int COLMUN >
-void MatrixNxN < Type, ROW, COLMUN >::Set( int index, Type value )
+void Matrix < Type, ROW, COLMUN >::Set( int index, Type value )
 {
 	m_Elm[ index ] = value;
 }
 
 template < typename Type, int ROW, int COLMUN >
-void MatrixNxN < Type, ROW, COLMUN >::Set( int row, int colmun, Type value )
+void Matrix < Type, ROW, COLMUN >::Set( int row, int colmun, Type value )
 {
 	m_Elms[ row ][ colmun ] = value;
 }
 
 template < typename Type, int ROW, int COLMUN >
-Type MatrixNxN < Type, ROW, COLMUN >::Get( int index ) const
+Type Matrix < Type, ROW, COLMUN >::Get( int index ) const
 {
 	return m_Elm[ index ];
 }
 
 template < typename Type, int ROW, int COLMUN >
-Type MatrixNxN < Type, ROW, COLMUN >::Get( int row, int colmun ) const
+Type Matrix < Type, ROW, COLMUN >::Get( int row, int colmun ) const
 {
 	return m_Elms[ row ][ colmun ];
 }
+
+typedef Matrix < float, 2, 2 >	Matrix22f;
+typedef Matrix < double, 2, 2 >	Marrix22d;
+typedef Matrix < float, 3, 3 >	Matrix33f;
+typedef Matrix < double, 3, 3 >	Matrix33d;
+typedef Matrix < float, 4, 4 >	Matrix44f;
+typedef Matrix < double, 4, 4 >	Matrix44d;
+
 
 #endif
