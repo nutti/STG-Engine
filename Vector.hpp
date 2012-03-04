@@ -744,6 +744,7 @@ public:
 	Type			m_Elm[ DIM ];
 	Vector();
 	Vector( const Vector < Type, DIM >& v );
+	Vector( Type arg0, ... );
 	~Vector();
 	//Add / Ternary operator (Overload of + operator)
 	Vector < Type, DIM > operator+( const Vector < Type, DIM >& v );
@@ -792,6 +793,17 @@ Vector < Type, DIM > ::Vector( const Vector < Type, DIM >& v )
 {
 	for( int elm = 0; elm < DIM; ++elm ){
 		m_Elm[ elm ] = v.m_Elm[ elm ];
+	}
+}
+
+template < typename Type, int DIM >
+Vector < Type, DIM > ::Vector( Type arg0, ... )
+{
+	Type* p = &arg0;
+	int n = 0;
+	while( n < DIM ){
+		m_Elm[ n ] = *p++;
+		++n;
 	}
 }
 

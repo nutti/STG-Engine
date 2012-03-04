@@ -1211,7 +1211,8 @@ public:
 	Matrix( const Matrix < Type, ROW, COLMUN >& m );
 	Matrix < Type, ROW, COLMUN > operator+( const Matrix < Type, ROW, COLMUN >& m );
 	Matrix < Type, ROW, COLMUN > operator-( const Matrix < Type, ROW, COLMUN >& m );
-	Matrix < Type, ROW, COLMUN > operator*( const Matrix < Type, ROW, COLMUN >& m );
+	template < int COLUMN_B >
+	Matrix < Type, ROW, COLUMN_B > operator*( const Matrix < Type, COLMUN, COLUMN_B >& m );
 	Matrix < Type, ROW, COLMUN > operator*( Type value );
 	Vector < Type, ROW > operator*( const Vector < Type, ROW >& v );
 	Matrix < Type, ROW, COLMUN > operator/( Type value );
@@ -1282,14 +1283,16 @@ Matrix < Type, ROW, COLMUN > Matrix < Type, ROW, COLMUN >::operator-( const Matr
 }
 
 template < typename Type, int ROW, int COLMUN >
-Matrix < Type, ROW, COLMUN > Matrix < Type, ROW, COLMUN >::operator*( const Matrix < Type, ROW, COLMUN >& m )
+template < int COLUMN_B >
+Matrix < Type, ROW, COLUMN_B > Matrix < Type, ROW, COLMUN >::operator*( const Matrix < Type, COLMUN, COLUMN_B >& m )
 {
-	Matrix < Type, ROW, COLMUN > matTmp;
+	Matrix < Type, ROW, COLUMN_B > matTmp;
 
-	for( int colmun = 0; colmun < COLMUN; ++colmun ){
-		for( int row = 0; row < ROW; ++row ){
-			for( int i = 0; i < ROW; ++i ){
-				matTmp.m_Elms[ row ][ colmun ] = this->m_Elms[ i ][ colmun ] * m.m_Elms[ row ][ i ];
+	for( int row = 0; row < ROW; ++row ){
+		for( int colmun = 0; colmun < COLUMN_B; ++colmun ){
+			matTmp.m_Elms[ row ][ colmun ] = 0;
+			for( int i = 0; i < COLMUN; ++i ){
+				matTmp.m_Elms[ row ][ colmun ] += this->m_Elms[ row ][ i ] * m.m_Elms[ i ][ colmun ];
 			}
 		}
 	}
