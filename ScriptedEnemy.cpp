@@ -45,7 +45,7 @@ namespace RTG
 	{
 		ResourceHandler* p = ResourceHandler::GetInst();
 
-		p->m_Sprite->DrawTexture( p->m_Texture[ m_EnemyInfo.m_ImgID ], MAPIL::IMAGE_TRANSFORMATION_METHOD_CENTER_MOVE, MAPIL::Vector2 < float > ( m_EnemyInfo.m_PosX, m_EnemyInfo.m_PosY ) );
+		MAPIL::DrawTexture( m_EnemyInfo.m_ImgID, m_EnemyInfo.m_PosX, m_EnemyInfo.m_PosY, 0.0f );
 	}
 
 	bool ScriptedEnemy::Move()

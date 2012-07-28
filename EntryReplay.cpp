@@ -105,20 +105,18 @@ namespace RTG
 
 	void EntryReplay::Draw()
 	{
-		ResourceHandler* p = ResourceHandler::GetInst();
-
 		// 2D描画開始
-		p->BeginDraw2D();
+		MAPIL::BeginRendering2DGraphics();
 
 		if( !m_Selected ){
 			for( int i = 0; i < 25; ++i ){
 				// 選択されているファイル情報を強調
 				if( i == m_FileNo ){
-					p->DrawString2D( 100.0f, 50.0f + i * 15.0f, 0xFFFFFFFF, m_EntryStr[ i ] );
+					MAPIL::DrawString( 100.0f, 50.0f + i * 15.0f, 0xFFFFFFFF, m_EntryStr[ i ] );
 				}
 				// 選択されていないファイル情報
 				else{
-					p->DrawString2D( 100.0f, 50.0f + i * 15.0f, 0x66666666, m_EntryStr[ i ] );
+					MAPIL::DrawString( 100.0f, 50.0f + i * 15.0f, 0x66666666, m_EntryStr[ i ] );
 				}
 			}
 		}
@@ -134,19 +132,17 @@ namespace RTG
 				strcpy( progStr, "Complete" );
 			}
 			sprintf( str, "Name : %s Score : %d Progress : %s", m_Name, m_Score, progStr );
-			p->DrawString2D( 100.0f, 100.0f, 0xFFFFFFFF, str );
+			MAPIL::DrawString( 100.0f, 100.0f, 0xFFFFFFFF, str );
 		}
 		
 		// 2D描画終了
-		p->EndDraw2D();
+		MAPIL::EndRendering2DGraphics();
 	}
 
 	void EntryReplay::Init()
 	{
-		ResourceHandler* p = ResourceHandler::GetInst();
-
 		// 削除済みのリソースを完全消去
-		p->RefleshResouces();
+		MAPIL::RefleshResources();
 
 		m_NameEntry.SetEffectiveChar( GetEffectiveChar() );
 

@@ -20,6 +20,8 @@
 
 #include <MAPIL/Math/Vector.hpp>
 
+#include <MAPIL/Util/CInterface.h>
+
 #pragma comment( lib, "MAPIL.lib" )
 #pragma comment( lib, "opengl32.lib" )
 #pragma comment( lib, "glu32.lib" )

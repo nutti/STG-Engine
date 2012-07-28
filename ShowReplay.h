@@ -7,7 +7,6 @@
 
 namespace RTG
 {
-	class Keyboard;
 	class ShowReplay : public Scene
 	{
 		char						m_Name[ 16 ];

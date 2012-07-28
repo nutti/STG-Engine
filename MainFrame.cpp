@@ -43,11 +43,9 @@ namespace RTG
 		p->m_pGameManager->LoadConfigFile( "config/config.dat" );
 
 		// 初期化
-		p->Init();
-		// グローバルリソースの設定
-		p->SetupGlobalResources();
+		MAPIL::InitMAPIL( "Confetti", 640, 480 );
 
-
+		// セーブデータ管理クラスの初期化
 		p->m_pSaveDataManager = new SaveDataManager( "save/RTG.dat" );
 		p->m_pSaveDataManager->Load();
 
@@ -58,7 +56,7 @@ namespace RTG
 		unsigned short buttons[ GENERAL_BUTTON_TOTAL ];
 		p->m_pGameManager->GetButtonMaps( buttons );
 		p->m_pGBManager = new GeneralButtonManager();
-		p->m_pGBManager->Init( p->m_Keyboard, p->m_pReplayEntry );
+		p->m_pGBManager->Init( p->m_pReplayEntry );
 		for( int i = 0; i < GENERAL_BUTTON_TOTAL; ++i ){
 			p->m_pGBManager->Assign( i, ( buttons[ i ] >> 8 ) & 0xFF, buttons[ i ] & 0xFF );
 		}
@@ -80,13 +78,11 @@ namespace RTG
 	{
 		static int cnt = 0;
 		ResourceHandler* p = ResourceHandler::GetInst();
-		p->m_Sprite->Begin();
+		MAPIL::BeginRendering2DGraphics();
 		char str[ 256 ];
-		TCHAR tstr[ 256 ];
 		sprintf( str, "%d", cnt );
-		MAPIL::ConvertToTChar( str, 256, tstr, 256 );
-		p->m_Sprite->DrawString( p->m_Font, tstr, MAPIL::IMAGE_TRANSFORMATION_METHOD_MOVE, MAPIL::Vector2 < float > ( 100.0f, 100.0f ), 0xFFFFFFFF );
-		p->m_Sprite->End();
+		MAPIL::DrawString( 100.0f, 100.0f, str );
+		MAPIL::EndRendering2DGraphics();
 		++cnt;
 
 		p->m_pGBManager->Reset();
@@ -96,7 +92,7 @@ namespace RTG
 	{
 		RTG::ResourceHandler* p = RTG::ResourceHandler::GetInst();
 
-		while( !p->m_MainWnd->ProcessMessage() ){
+		while( !MAPIL::ProcessMessage() ){
 			if( m_FPS.DoesElapseNextTime() ){
 
 				// ボタンの状態を取得
@@ -104,7 +100,7 @@ namespace RTG
 
 				// スクリーンショット
 				if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_SS ) ){
-					ScreenShot( TSTR( "screencapture" ), TSTR( "ScreenShot" ) );
+					ScreenShot( "screencapture", "ScreenShot" );
 				}
 
 				// 終了処理
@@ -116,16 +112,15 @@ namespace RTG
 				}
 
 				// 描画設定
-				p->m_GraphicsCtrl->BeginRendering();
-				p->m_GraphicsCtrl->EnableBlend( true );
-				p->m_GraphicsCtrl->EnableLight( false );
-				p->m_GraphicsCtrl->EnableZBuffer( false );
-				p->m_GraphicsCtrl->SetTextureMode( MAPIL::TEXTURE_MODE_2D );
-				p->m_GraphicsCtrl->SetCullMode( MAPIL::CULL_MODE_DISABLED );
-				//p->m_GraphicsCtrl->SetAlphaBlendMode( MAPIL::ALPHA_BLEND_MODE_NO_TRANSPARENT );
-				p->m_GraphicsCtrl->SetAlphaBlendMode( MAPIL::ALPHA_BLEND_MODE_SEMI_TRANSPARENT );
+				MAPIL::BeginRendering();
+				MAPIL::EnableBlending();
+				MAPIL::EnableLighting();
+				MAPIL::EnableZBuffering();
+				MAPIL::SetTextureMode( MAPIL::TEXTURE_MODE_2D );
+				MAPIL::SetCullingMode( MAPIL::CULL_MODE_DISABLED );
+				MAPIL::SetAlphaBlendingMode( MAPIL::ALPHA_BLEND_MODE_SEMI_TRANSPARENT );
 				//p->m_GraphicsCtrl->SetAlphaBlendMode( MAPIL::ALPHA_BLEND_MODE_ADD );
-				p->m_GraphicsCtrl->SetViewport( 0, 0, 640, 480 );
+				MAPIL::SetViewPort( 0, 0, 640, 480 );
 
 				// シーン遷移
 				if( m_pScene->HasNextScene() ){
@@ -145,7 +140,7 @@ namespace RTG
 					m_pScene->Update();
 				}
 
-				p->m_GraphicsCtrl->EndRendering();
+				MAPIL::EndRendering();
 			}
 			else{
 				Sleep( 1 );

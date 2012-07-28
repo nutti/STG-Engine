@@ -1,5 +1,6 @@
+#include "Defines.h"
+
 #include "ScreenShot.h"
-#include "ResourceHandler.h"
 
 #include <string>
 #include <tchar.h>
@@ -22,25 +23,24 @@ namespace RTG
 		return digit;
 	}
 
-	void ScreenShot( const TCHAR* pDirPath, const TCHAR* pFileName )
+	void ScreenShot( const char* pDirPath, const char* pFileName )
 	{
 
 		for( int i = 0; i < MAXIMUM_SCREEN_SHOT; ++i ){
 			int digit = GetDigit( i );
-			std::basic_string < TCHAR > s( pDirPath );
-			TCHAR buf[ 20 ];
-			_stprintf_s( buf, TEXT( "%d" ), i );
-			s += TEXT( "/" );
+			std::basic_string < char > s( pDirPath );
+			char buf[ 20 ];
+			sprintf( buf, "%d", i );
+			s += "/";
 			s += pFileName;
-			s += TEXT( "_" );
+			s += "_";
 			for( int di = 5; di > digit; --di ){
-				s += TEXT( "0" );
+				s += "0";
 			}
 			s += buf;
-			s += TEXT( ".bmp" );
-			if( !::PathFileExists( s.c_str() ) ){
-				ResourceHandler* p = ResourceHandler::GetInst();
-				p->m_GraphicsCtrl->CaptureScreen( s.c_str() );
+			s += ".bmp";
+			if( !::PathFileExistsA( s.c_str() ) ){
+				MAPIL::CaptureScreen( s.c_str() ); 
 				return;
 			}
 		}

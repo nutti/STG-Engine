@@ -50,8 +50,7 @@ namespace RTG
 	public:
 		GeneralButtonManager();
 		~GeneralButtonManager();
-		void Init(	MAPIL::IKeyboard keyboard,
-					ReplayEntry* pReplayEntry );
+		void Init( ReplayEntry* pReplayEntry );
 		void Assign( int button, int dev, int devButton );
 		int GetAssignedDev( int button );
 		int GetAssignedDevButton( int button );

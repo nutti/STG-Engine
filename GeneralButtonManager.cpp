@@ -35,10 +35,9 @@ namespace RTG
 		m_CurFrame = 0;
 	}
 
-	void GeneralButtonManager::Init(	MAPIL::IKeyboard keyboard,
-										ReplayEntry* pReplay )
+	void GeneralButtonManager::Init( ReplayEntry* pReplay )
 	{
-		m_pKeyboard = new Keyboard( keyboard );
+		m_pKeyboard = new Keyboard;
 		m_pReplay = pReplay;
 		m_CurFrame = 0;
 	}

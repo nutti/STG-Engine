@@ -7,7 +7,7 @@ namespace RTG
 {
 	const int MAXIMUM_SCREEN_SHOT = 10000;		// 10000–‡ŽB‰e‰Â”\
 
-	void ScreenShot( const TCHAR* pDirPath, const TCHAR* pFileName );
+	void ScreenShot( const char* pDirPath, const char* pFileName );
 }
 
 #endif

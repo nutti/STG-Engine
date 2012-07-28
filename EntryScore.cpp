@@ -80,10 +80,8 @@ namespace RTG
 
 	void EntryScore::Draw()
 	{
-		ResourceHandler* p = ResourceHandler::GetInst();
-
 		// 2D描画開始
-		p->BeginDraw2D();
+		MAPIL::BeginRendering2DGraphics();
 
 		// 進捗状況の表示
 		char str[ 160 ];
@@ -95,18 +93,16 @@ namespace RTG
 			strcpy( progStr, "Complete" );
 		}
 		sprintf( str, "Name : %s Score : %d Progress : %s", m_Name, m_Score, progStr );
-		p->DrawString2D( 100.0f, 100.0f, 0xFFFFFFFF, str );
+		MAPIL::DrawString( 100.0f, 100.0f, 0xFFFFFFFF, str );
 
 		// 2D描画終了
-		p->EndDraw2D();
+		MAPIL::EndRendering2DGraphics();
 	}
 
 	void EntryScore::Init()
 	{
-		ResourceHandler* p = ResourceHandler::GetInst();
-
 		// 削除済みのリソースを完全消去
-		p->RefleshResouces();
+		MAPIL::RefleshResources();
 
 		m_NameEntry.SetEffectiveChar( GetEffectiveChar() );
 	}

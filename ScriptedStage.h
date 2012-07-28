@@ -48,7 +48,12 @@ namespace RTG
 		CircleEnemyList				m_EnemyList;			// 敵リスト
 		CircleEnemyShotList			m_EnemyShotList;		// 敵弾リスト
 		CircleReflectedShotList		m_ReflectedShotList;	// 反射弾リスト
-		Effect2DList				m_Effect2DList;				// 2Dエフェクトリスト
+		Effect2DList				m_Effect2DList;			// 2Dエフェクトリスト
+
+		
+		ResourceScriptData			m_ResourceScriptData;		// スクリプトデータ（リソース）
+		ResourceMap					m_ResourceMap;				// スクリプトテクスチャID -> リソースハンドラID
+
 		
 		// 非公開メソッド群
 		void UpdatePlayer();					// プレイヤーの情報を更新

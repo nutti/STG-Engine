@@ -3,7 +3,7 @@
 
 namespace RTG
 {
-	Keyboard::Keyboard( MAPIL::IKeyboard keyboard ) : m_Keyboard( keyboard )
+	Keyboard::Keyboard()
 	{
 		MAPIL::ZeroObject( m_PrevKeys, sizeof( m_PrevKeys ) );
 		MAPIL::ZeroObject( m_Keys, sizeof( m_Keys ) );
@@ -17,7 +17,7 @@ namespace RTG
 
 	void Keyboard::Update()
 	{
-		m_Keyboard->GetKeyMap( m_Keys );
+		MAPIL::GetKeyboardState( m_Keys );
 
 		for( int i = 0; i < 256; ++i ){
 			if( MAPIL::IsKeyPushed( m_Keys[ i ] ) ){

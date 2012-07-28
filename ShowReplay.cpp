@@ -2,10 +2,9 @@
 
 #include "ShowReplay.h"
 #include "Menu.h"
-#include "Stage1.h"
 #include "Keyboard.h"
 #include "ReplayLoader.h"
-
+#include "ScriptedStage.h"
 #include "GeneralButtonManager.h"
 
 #include <time.h>
@@ -39,7 +38,7 @@ namespace RTG
 			rl.Load( fileName );
 			rl.GetReplayData( p->m_pReplayEntry );
 			p->m_pGBManager->SetReplay( 1 );
-			SetNextScene( new Stage1( PLAY_MODE_REPLAY ) );
+			SetNextScene( new ScriptedStage( p->m_pCompiler, 1 ) );
 		}
 		else if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_DOWN ) ){
 			++m_FileNo;
@@ -60,30 +59,26 @@ namespace RTG
 
 	void ShowReplay::Draw()
 	{
-		ResourceHandler* p = ResourceHandler::GetInst();
-
 		// 2D•`‰æŠJŽn
-		p->BeginDraw2D();
+		MAPIL::BeginRendering2DGraphics();
 
 		for( int i = 0; i < 25; ++i ){
 			if( i == m_FileNo ){
-				p->DrawString2D( 100.0f, 50.0f + i * 15.0f, 0xFFFFFFFF, m_EntryStr[ i ] );
+				MAPIL::DrawString( 100.0f, 50.0f + i * 15.0f, 0xFFFFFFFF, m_EntryStr[ i ] );
 			}
 			else{
-				p->DrawString2D( 100.0f, 50.0f + i * 15.0f, 0x66666666, m_EntryStr[ i ] );
+				MAPIL::DrawString( 100.0f, 50.0f + i * 15.0f, 0x66666666, m_EntryStr[ i ] );
 			}
 		}
 		
 		// 2D•`‰æI—¹
-		p->EndDraw2D();
+		MAPIL::EndRendering2DGraphics();
 	}
 
 
 	void ShowReplay::Init()
 	{
-		ResourceHandler* p = ResourceHandler::GetInst();
-
-		p->RefleshResouces();
+		MAPIL::RefleshResources();
 
 		char fileName[ 256 ];
 		for( int i = 0; i < 25; ++i ){

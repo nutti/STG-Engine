@@ -22,6 +22,11 @@ namespace RTG
 
 	ScriptedStage::~ScriptedStage()
 	{
+		// 全リソースの開放
+		for( unsigned int i = 0; i < m_ResourceMap.m_TextureMap.size(); ++i ){
+			MAPIL::DeleteTexture( m_ResourceMap.m_TextureMap[ i ] );
+		}
+
 		m_StageNo = 0;
 		m_pScriptCmd = NULL;
 		m_Frame = 0;
@@ -42,7 +47,7 @@ namespace RTG
 		
 		if( !m_Paused ){
 
-			p->m_Sprite->Begin();
+			MAPIL::BeginRendering2DGraphics();
 
 			UpdatePlayer();					// プレイヤーの情報を更新
 			UpdateEnemy();					// 敵の情報を更新
@@ -52,7 +57,7 @@ namespace RTG
 			CollidePlayerAndEnemy();		// プレイヤーと敵衝突判定
 			CollideEnemyAndReflectedShot();	// 敵と反射弾との衝突判定
 
-			p->m_Sprite->End();
+			MAPIL::EndRendering2DGraphics();
 
 			// スクリプトコマンドの実行
 			// スクリプトが終了していないかチェック
@@ -175,15 +180,26 @@ namespace RTG
 		ResourceHandler* p = ResourceHandler::GetInst();
 
 		// 削除要求のオブジェクトを完全削除
-		p->RefleshResouces();
+		MAPIL::RefleshResources();
 
-		// テスト用。
-		p->m_Texture[ 0 ] = p->m_pGraphicsFactory->CreateTexture( TSTR( "Resource/Enemy1.png" ) );
-		p->m_Texture[ 0 ]->Create( TSTR( "Resource/Enemy1.png" ) );
-		p->m_Texture[ 1 ] = p->m_pGraphicsFactory->CreateTexture( TSTR( "Enemy Shot 1" ) );
-		p->m_Texture[ 1 ]->Create( TSTR( "Resource/rtg_enemy_shot_3.png" ) );
-
+		// スクリプトのコンパイル
 		p->m_pCompiler->Compile( m_StageNo );
+
+		// 各種リソースの読み込み
+		const int INITIAL_TEXTURE_MAP_RESERVE_CAP = 50;			// 初期のテクスチャMAP許容量
+		m_ResourceMap.m_TextureMap.resize( INITIAL_TEXTURE_MAP_RESERVE_CAP );
+		m_ResourceScriptData = p->m_pCompiler->GetResourceScriptData();
+		// テクスチャの読み込み
+		typedef std::map < int, std::string > ::iterator	TextureIter;
+		TextureIter it = m_ResourceScriptData.m_TextureList.begin();
+		for( ; it != m_ResourceScriptData.m_TextureList.end(); ++it ){
+			// 許容値を超えたインデックスが必要な場合は、指定されたインデックスの2倍のサイズのresizeする。
+			if( it->first > m_ResourceMap.m_TextureMap.size() ){
+				m_ResourceMap.m_TextureMap.resize( it->first * 2 );
+			}
+			m_ResourceMap.m_TextureMap[ it->first ] = MAPIL::CreateTexture( it->second.c_str() );
+		}
+
 
 		// ステージ情報の設定
 		MAPIL::ZeroObject( &m_StageInfo, sizeof( m_StageInfo ) );
@@ -196,7 +212,6 @@ namespace RTG
 		// 仮想マシンのセットアップ
 		m_VirtualMachine.Init( m_pScriptCmd, &m_StageInfo );
 
-		// 各種リソースの読み込み
 
 		// 各リストの初期化
 		m_PlayerList.Init();

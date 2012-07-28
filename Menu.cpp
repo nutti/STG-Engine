@@ -1,5 +1,4 @@
 #include "Menu.h"
-#include "Stage1.h"
 #include "ScriptedStage.h"
 #include "Config.h"
 #include "History.h"
@@ -31,9 +30,7 @@ namespace RTG
 
 	Menu::~Menu()
 	{
-		if( m_BGM.GetPointer() ){
-			m_BGM->Stop();
-		}
+		MAPIL::StopStreamingBuffer( m_BGM );
 		DeleteTaskList( m_pEffect3DList );
 		m_Counter = 0;
 		MAPIL::SafeDelete( m_pEffect3DList );
@@ -44,33 +41,29 @@ namespace RTG
 	{
 		ResourceHandler* p = ResourceHandler::GetInst();
 
-		p->RefleshResouces();
+		MAPIL::RefleshResources();
 
-		m_PointSprite = p->m_pGraphicsFactory->CreatePointSprite( TSTR( "Menu effect" ) );
+		m_Texture[ 0 ] = MAPIL::CreateTexture( "Resource/MenuEffect2.png" );
 
-		m_Texture[ 0 ] = p->m_pGraphicsFactory->CreateTexture( TSTR( "Menu effect 1" ) );
-		m_Texture[ 0 ]->Create( TSTR( "Resource/MenuEffect2.png" ) );
+		m_BGM = MAPIL::CreateStreamingBuffer( "Resource/rtg_title.wav" );
 
-		m_BGM = p->m_pSoundFactory->CreateStreamingBuffer( TSTR( "Menu BGM" ) );
-		m_BGM->Create( TSTR( "Resource/rtg_title.wav" ) );
+		m_SelectSE = MAPIL::CreateStaticBuffer( "Resource/select.wav" );
 
-		m_SelectSE = p->m_pSoundFactory->CreateStaticBuffer( TSTR( "Selected SE" ) );
-		m_SelectSE->Create( TSTR( "Resource/select.wav" ) );
+		m_MoveSE = MAPIL::CreateStaticBuffer( "Resource/move.wav" );
 
-		m_MoveSE = p->m_pSoundFactory->CreateStaticBuffer( TSTR( "Moce SE" ) );
-		m_MoveSE->Create( TSTR( "Resource/move.wav" ) );
+		m_PointSprite = MAPIL::CreatePointSprite( 200, m_Texture[ 0 ] );
 
-		m_PointSprite->Create( 200, m_Texture[ 0 ], MAPIL::VERTEX_MANAGEMENT_NONE );
+		m_Camera3D = MAPIL::CreateCamera();
+		MAPIL::SetCameraViewTrans(	m_Camera3D,
+									0.0f, 0.0f, 10.0f,
+									0.0f, 0.0f, 0.0f,
+									0.0f, 1.0f, 0.0f );
+		MAPIL::SetCameraProjTrans(	m_Camera3D,
+									static_cast < float > ( MAPIL::DegToRad( 30.0 ) ),
+									640.0f / 480.0f,
+									0.01f, 20.0f );
+									
 
-		m_Camera2D = p->m_pGraphicsFactory->CreateCamera( TSTR( "Menu Camera 2D" ) );
-
-		m_Camera3D = p->m_pGraphicsFactory->CreateCamera( TSTR( "Menu Camera 3D" ) );
-		m_Camera3D->Create(	MAPIL::Vector3 < float > ( 0.0f, 0.0f, 10.0f ),
-							MAPIL::Vector3 < float > ( 0.0f, 0.0f, 0.0f ),
-							MAPIL::Vector3 < float > ( 0.0f, 1.0f, 0.0f ),
-							static_cast < float > ( MAPIL::DegToRad( 30.0 ) ),
-							p->m_GLContext->GetWidth() * 1.0f / p->m_GLContext->GetHeight(),
-							0.01f, 20.0f );
 
 		m_NameEntry.SetEffectiveChar( GetEffectiveChar() );
 
@@ -79,16 +72,16 @@ namespace RTG
 
 		
 		for( int i = 0; i < 200; ++i ){
-			m_pEffect3DList->Add( new MenuEffect1(	m_PointSprite,
-													MAPIL::Vector3 < float > (	-1.0f + 2.0f * rand() / RAND_MAX,
-																				5.0f + 10.0f * rand() / RAND_MAX,
-																				-1.0f - 3.0f * rand() / RAND_MAX ),
-													0.01 + 0.02 * rand() / RAND_MAX,
-													MAPIL::DegToRad( -180.0 * rand() / RAND_MAX ),
-													i ) );
+			//m_pEffect3DList->Add( new MenuEffect1(	m_PointSprite,
+			//										MAPIL::Vector3 < float > (	-1.0f + 2.0f * rand() / RAND_MAX,
+			//																	5.0f + 10.0f * rand() / RAND_MAX,
+			//																	-1.0f - 3.0f * rand() / RAND_MAX ),
+			//										0.01 + 0.02 * rand() / RAND_MAX,
+			//										MAPIL::DegToRad( -180.0 * rand() / RAND_MAX ),
+			//										i ) );
 		}
 		
-		m_BGM->Play();
+		MAPIL::PlayStreamingBuffer( m_BGM );
 	}
 
 	bool Menu::IsLoading() const
@@ -111,36 +104,36 @@ namespace RTG
 			if( m_SelectedMenuItem > MENU_ITEM_EXIT ){
 				m_SelectedMenuItem = MENU_ITEM_PLAY_GAME;
 			}
-			m_MoveSE->Play();
+			MAPIL::PlayStaticBuffer( m_MoveSE );
 		}
 		else if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_UP ) ){
 			--m_SelectedMenuItem;
 			if( m_SelectedMenuItem < MENU_ITEM_PLAY_GAME ){
 				m_SelectedMenuItem = MENU_ITEM_EXIT;
 			}
-			m_MoveSE->Play();
+			MAPIL::PlayStaticBuffer( m_MoveSE );
 		}
 		else if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_BARRIER ) ){
 			if( m_SelectedMenuItem == MENU_ITEM_PLAY_GAME ){
-				SetNextScene( new Stage1( PLAY_MODE_NORMAL ) );
-				m_SelectSE->Play();
+				SetNextScene( new ScriptedStage( p->m_pCompiler, 1 ) );
+				MAPIL::PlayStaticBuffer( m_SelectSE );
 			}
 			else if( m_SelectedMenuItem == MENU_ITEM_REPLAY ){
 				SetNextScene( new ShowReplay() );
-				m_SelectSE->Play();
+				MAPIL::PlayStaticBuffer( m_SelectSE );
 			}
 			else if( m_SelectedMenuItem == MENU_ITEM_SCORE ){
 				m_NextMenuItem = MENU_ITEM_SCORE;
 				m_StateChangeCounter = 1;
-				m_SelectSE->Play();
+				MAPIL::PlayStaticBuffer( m_SelectSE );
 			}
 			else if( m_SelectedMenuItem == MENU_ITEM_CONFIG ){
 				SetNextScene( new Config() );
-				m_SelectSE->Play();
+				MAPIL::PlayStaticBuffer( m_SelectSE );
 			}
 			else if( m_SelectedMenuItem == MENU_ITEM_EXIT ){
 				p->m_pGameManager->SetTermSig();
-				m_SelectSE->Play();
+				MAPIL::PlayStaticBuffer( m_SelectSE );
 			}
 		}
 		else if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_CANCEL ) ){
@@ -148,7 +141,7 @@ namespace RTG
 				p->m_pGameManager->SetTermSig();
 			}
 			m_SelectedMenuItem = MENU_ITEM_EXIT;
-			m_MoveSE->Play();
+			MAPIL::PlayStaticBuffer( m_MoveSE );
 		}
 
 		TaskList < MenuEffect1 > ::Iterator itEffect3D( m_pEffect3DList );
@@ -160,17 +153,15 @@ namespace RTG
 			if( !( *itEffect3D ).Update() ){
 				int index = ( *itEffect3D ).GetIndex();
 				itEffect3D.Remove();
-				m_pEffect3DList->Add( new MenuEffect1(	m_PointSprite,
-														MAPIL::Vector3 < float > (	-1.0f + 2.0f * rand() / RAND_MAX,
-																					5.0f + 10.0f * rand() / RAND_MAX,
-																					-1.0f - 3.0f * rand() / RAND_MAX ),
-														0.01f + 0.02f * rand() / RAND_MAX,
-														MAPIL::DegToRad( -180.0 * rand() / RAND_MAX ),
-														index ) );
+				//m_pEffect3DList->Add( new MenuEffect1(	m_PointSprite,
+				//										MAPIL::Vector3 < float > (	-1.0f + 2.0f * rand() / RAND_MAX,
+				//																	5.0f + 10.0f * rand() / RAND_MAX,
+				//																	-1.0f - 3.0f * rand() / RAND_MAX ),
+				//										0.01f + 0.02f * rand() / RAND_MAX,
+				//										MAPIL::DegToRad( -180.0 * rand() / RAND_MAX ),
+				//										index ) );
 			}
 		}
-
-		m_Camera2D->Enable();
 
 		// ÉÅÉjÉÖÅ[ï\é¶
 		const float MENU_POS_BASE_X = 420.0f;
@@ -187,36 +178,35 @@ namespace RTG
 			}
 		}
 
-		p->m_Sprite->Begin();
+		MAPIL::BeginRendering2DGraphics();
+
 
 		if( m_StateChangeCounter == 0 ){
-			p->m_Sprite->DrawString( p->m_Font, TSTR( "Å°" ), MAPIL::IMAGE_TRANSFORMATION_METHOD_MOVE, MAPIL::Vector2 < float > ( MENU_POS_BASE_X - 20.0f + MENU_POS_OFFSET_X * m_SelectedMenuItem, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * m_SelectedMenuItem ), 0xFFFFFFFF );
-
-			p->m_Sprite->DrawString( p->m_Font, TSTR( "Play Game" ), MAPIL::IMAGE_TRANSFORMATION_METHOD_MOVE, MAPIL::Vector2 < float > ( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 0, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 0 ), 0xFFFFFFFF );
-			p->m_Sprite->DrawString( p->m_Font, TSTR( "Replay" ), MAPIL::IMAGE_TRANSFORMATION_METHOD_MOVE, MAPIL::Vector2 < float > ( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 1, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 1 ), 0xFFFFFFFF );
-			p->m_Sprite->DrawString( p->m_Font, TSTR( "Score" ), MAPIL::IMAGE_TRANSFORMATION_METHOD_MOVE, MAPIL::Vector2 < float > ( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 2, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 2 ), 0xFFFFFFFF );
-			p->m_Sprite->DrawString( p->m_Font, TSTR( "Config" ), MAPIL::IMAGE_TRANSFORMATION_METHOD_MOVE, MAPIL::Vector2 < float > ( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 3, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 3 ), 0xFFFFFFFF );
-			p->m_Sprite->DrawString( p->m_Font, TSTR( "Exit" ), MAPIL::IMAGE_TRANSFORMATION_METHOD_MOVE, MAPIL::Vector2 < float > ( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 4, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 4 ), 0xFFFFFFFF );
+			MAPIL::DrawString( MENU_POS_BASE_X - 20.0f + MENU_POS_OFFSET_X * m_SelectedMenuItem, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * m_SelectedMenuItem, "Å°" );
+			MAPIL::DrawString( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 0, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 0, "Play Game" );
+			MAPIL::DrawString( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 1, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 1, "Replay" );
+			MAPIL::DrawString( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 2, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 2, "Score" );
+			MAPIL::DrawString( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 3, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 3, "Config" );
+			MAPIL::DrawString( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 4, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 4, "Exit" );
 		}
 		else if( m_NextMenuItem == MENU_ITEM_SCORE ){
-			p->m_Sprite->DrawString( p->m_Font, TSTR( "Score" ), MAPIL::IMAGE_TRANSFORMATION_METHOD_MOVE, MAPIL::Vector2 < float > ( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 2 + m_StateChangeCounter * 5, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 2 ), 0xFFFFFFFF );
+			MAPIL::DrawString( MENU_POS_BASE_X + MENU_POS_OFFSET_X * 2 + m_StateChangeCounter * 5, MENU_POS_BASE_Y + MENU_POS_OFFSET_Y * 2, "Score" );
 		}
-		p->m_Sprite->End();
+
+		MAPIL::EndRendering2DGraphics();
 
 		++m_Counter;
 	}
 
 	void Menu::Draw()
 	{
-		ResourceHandler* p = ResourceHandler::GetInst();
+		MAPIL::EnableCamera( m_Camera3D );
 
-		m_Camera3D->Enable();
+		MAPIL::DisableZBuffering();
 
-		p->m_GraphicsCtrl->EnableZBuffer( false );
+		MAPIL::DrawPointSprite( m_PointSprite );
 
-		m_PointSprite->Draw();
-
-		p->m_GraphicsCtrl->EnableZBuffer( false );
+		MAPIL::EnableZBuffering();
 	}
 
 	

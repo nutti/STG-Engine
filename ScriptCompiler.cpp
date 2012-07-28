@@ -74,6 +74,37 @@ namespace RTG
 
 	void ScriptCompiler::CompileResourceScript( const char* pFileName )
 	{
+		std::ifstream fIn( pFileName, std::ios::in );
+
+		int type;		// スクリプトタイプ
+		while( !fIn.eof() ){
+			char buf[ 1024 ];
+			fIn.getline( buf, sizeof( buf ) );
+			if( !strcmp( buf, "[BGM]" ) ){
+				type = RESOURCE_TYPE_BGM;
+			}
+			else if( !strcmp( buf, "[SE]" ) ){
+				type = RESOURCE_TYPE_SE;
+			}
+			else if( !strcmp( buf, "[Texture]" ) ){
+				type = RESOURCE_TYPE_TEXTURE;
+			}
+			else if( !strcmp( buf, "" ) ){
+				// 無視
+			}
+			else{
+				// ファイル名取得
+				if( type == RESOURCE_TYPE_BGM ){
+					m_ResourceScriptData.m_BGMList.insert( std::pair < int, std::string > ( GetID( buf ), GetFileName( buf ) ) );
+				}
+				else if( type == RESOURCE_TYPE_SE ){
+					m_ResourceScriptData.m_SEList.insert( std::pair < int, std::string > ( GetID( buf ), GetFileName( buf ) ) );
+				}
+				else if( type == RESOURCE_TYPE_TEXTURE ){
+					m_ResourceScriptData.m_TextureList.insert( std::pair < int, std::string > ( GetID( buf ), GetFileName( buf ) ) );
+				}
+			}
+		}
 	}
 
 	void ScriptCompiler::Cleanup()
@@ -200,6 +231,11 @@ namespace RTG
 		}
 
 		m_Loaded = true;
+	}
+
+	ResourceScriptData ScriptCompiler::GetResourceScriptData()
+	{
+		return m_ResourceScriptData;
 	}
 
 	VM::Data* ScriptCompiler::GetStageScript()

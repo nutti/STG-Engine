@@ -17,7 +17,7 @@ namespace RTG
 		int								m_HP;
 		float							m_PosX;
 		float							m_PosY;
-		int								m_ImgID;
+		unsigned int					m_ImgID;
 	};
 
 	// スクリプトエンジンに渡すステージ情報
@@ -28,6 +28,14 @@ namespace RTG
 		TaskList < CircleEnemy >*		m_pEnemyList;
 		TaskList < CircleEnemyShot >*	m_pEnemyShotList;
 		int*							m_pFrame;
+	};
+
+	// リソース対応関係
+	struct ResourceMap
+	{
+		std::vector < int >		m_BGMMap;			// BGM
+		std::vector < int >		m_SEMap;			// SE
+		std::vector < int >		m_TextureMap;		// テクスチャ
 	};
 }
 

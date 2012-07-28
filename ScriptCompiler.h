@@ -30,9 +30,18 @@ namespace RTG
 		char	m_FileName[ 1024 ];		// ファイル名
 	};
 
+	struct ResourceScriptData
+	{
+		std::map < int, std::string >		m_BGMList;
+		std::map < int, std::string >		m_SEList;
+		std::map < int, std::string >		m_TextureList;
+	};
+
 	// スクリプトファイル構成図
 	//
-	//	Stage構成情報ファイル ------> Stage1構成ファイル --------> 敵スクリプトファイル 0 ...
+	//	Stage構成情報ファイル ------> Stage1構成ファイル --------> リソーススクリプトファイル
+	//							|							|
+	//							|							---> 敵スクリプトファイル 0 ...
 	//							|							|
 	//							|							---> 敵弾スクリプトファイル 0 ...
 	//							|							|
@@ -58,6 +67,13 @@ namespace RTG
 			SCRIPT_TYPE_STAGE		= 2,
 			SCRIPT_TYPE_RESOURCE	= 3,
 		};
+		// リソーススクリプトのリソースの種類
+		enum ResourceType
+		{
+			RESOURCE_TYPE_BGM		= 0,
+			RESOURCE_TYPE_SE		= 1,
+			RESOURCE_TYPE_TEXTURE	= 2,
+		};
 
 		// スクリプトデータ
 		struct ScriptData
@@ -73,7 +89,7 @@ namespace RTG
 		// スクリプト本体
 		ScriptData*						m_pStageScriptData;			// ステージスクリプト
 		// map( index, filename ) => vector( index, val->handle)
-		std::map < int, std::string >	m_ResourceList;				// ロードするリソースリスト
+		ResourceScriptData				m_ResourceScriptData;		// ロードするリソースリスト
 		ScriptData*						m_pEnemyScriptData;			// 敵のスクリプト本体
 		int								m_EnemyScirptTotal;			// 敵のスクリプト数
 		ScriptData*						m_pEnemyShotScriptData;		// 敵弾のスクリプト本体
@@ -91,6 +107,7 @@ namespace RTG
 		~ScriptCompiler();
 		void BuildFileStructure( const char* pFileName );		// スクリプトファイルの構成を作成
 		void Compile( int stage );								// ステージを指定してコンパイル
+		ResourceScriptData GetResourceScriptData();				// リソーススクリプトデータを取得する
 		VM::Data* GetStageScript();									// ステージスクリプトを取得
 		VM::Data* GetEnemyScript( int index );						// 敵のスクリプトを取得
 		VM::Data* GetEnemyShotScript( int index );					// 敵弾のスクリプトを取得

@@ -1,14 +1,6 @@
 #include "Defines.h"
 #include "MainFrame.h"
 
-#include "ScriptCompiler.h"
-
-#include "ScriptEngine/Compiler.h"
-#include "ScriptEngine/VM.h"
-
-#include "ScriptedEnemy.h"
-#include "ScriptedStage.h"
-
 #pragma comment ( lib, "MAPIL.lib" )
 
 int WINAPI WinMain( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nCmd )

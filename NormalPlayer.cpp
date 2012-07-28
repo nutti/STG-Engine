@@ -27,54 +27,24 @@ namespace RTG
 
 	void NormalPlayer::Draw()
 	{
-		ResourceHandler* p = ResourceHandler::GetInst();
 
-		MAPIL::Matrix4x4 < float > mat;
-		MAPIL::Matrix4x4 < float > tmpMat1;
-		MAPIL::Matrix4x4 < float > tmpMat2;
-		MAPIL::Matrix4x4 < float > tmpMat3;
-		MAPIL::CreateTranslationMat(	&tmpMat1,
-										static_cast < float > ( - p->m_Texture[ 1 ]->GetSize().m_X / 2 ),
-										static_cast < float > ( - p->m_Texture[ 1 ]->GetSize().m_Y / 2 ) );
-		MAPIL::CreateRotationZMat( &tmpMat2, static_cast < float > ( m_ReflectAngle - 1.57 ) );
-		MAPIL::CreateTranslationMat(	&tmpMat3,
-										static_cast < float > ( m_Pos.m_X ),
-										static_cast < float > ( m_Pos.m_Y ) );
-		mat = tmpMat1 * tmpMat2 * tmpMat3;
+		MAPIL::DrawTexture( 1, m_Pos.m_X, m_Pos.m_Y, m_ReflectAngle );
 
-		p->m_Sprite->DrawTexture( p->m_Texture[ 1 ], mat );
 
 		if( m_IsReflectMode ){
-			MAPIL::Matrix4x4 < float > worldMat;
-			MAPIL::Matrix4x4 < float > offsetMat;
-			MAPIL::Matrix4x4 < float > scaleMat;
-			MAPIL::Matrix4x4 < float > posMat;
-			MAPIL::CreateTranslationMat(	&offsetMat,
-											static_cast < float > ( - p->m_Texture[ 8 ]->GetSize().m_X / 2 ),
-											static_cast < float > ( - p->m_Texture[ 8 ]->GetSize().m_Y / 2 ) );
 			float scale = m_Energy / 10000.0f;
-			MAPIL::CreateScalingMat( &scaleMat, scale, scale );
-			MAPIL::CreateTranslationMat( &posMat, static_cast < float > ( m_Pos.m_X ), static_cast < float > ( m_Pos.m_Y ) );
-			worldMat = offsetMat * scaleMat * posMat;
-			p->m_Sprite->DrawTexture( p->m_Texture[ 8 ], worldMat );
+			MAPIL::DrawTexture( 0, m_Pos.m_X, m_Pos.m_Y, 0.0f );
 		}
 
 		// 情報表示
 		// エネルギーバー
-		MAPIL::Matrix4x4 < float > worldMat;
-		MAPIL::Matrix4x4 < float > scaleMat;
-		MAPIL::Matrix4x4 < float > posMat;
 		float scale = m_Energy / 5000.0f;
-		MAPIL::CreateScalingMat( &scaleMat, scale, 0.2f );
-		MAPIL::CreateTranslationMat( &posMat, 1.0f, 460.0f );
-		worldMat = scaleMat * posMat;
-		p->m_Sprite->DrawTexture( m_EnergyBar, worldMat );
+		//MAPIL::CreateScalingMat( &scaleMat, scale, 0.2f );
+		MAPIL::DrawTexture( 0, 1.0f, 460.0f, 0.0f );
 		// HPバー
-		scale = m_HP / 25.0f;
-		MAPIL::CreateScalingMat( &scaleMat, scale, 0.2f );
-		MAPIL::CreateTranslationMat( &posMat, 1.0f, 450.0f );
-		worldMat = scaleMat * posMat;
-		p->m_Sprite->DrawTexture( m_HPBar, worldMat );
+		//scale = m_HP / 25.0f;
+		//MAPIL::CreateScalingMat( &scaleMat, scale, 0.2f );
+		MAPIL::DrawTexture( 0, 1.0f, 450.0f, 0.0f );
 	}
 
 	bool NormalPlayer::Move()

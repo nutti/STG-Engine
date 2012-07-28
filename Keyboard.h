@@ -14,10 +14,9 @@ namespace RTG
 			KEY_STATE_KEEP		= 2,
 		};
 		char					m_PrevKeys[ 256 ];
-		MAPIL::IKeyboard		m_Keyboard;
 		unsigned char			m_Keys[ 256 ];
 	public:
-		Keyboard( MAPIL::IKeyboard keyboard );
+		Keyboard();
 		~Keyboard();
 		void Update();
 		bool IsPushedOnce( int key ) const;

@@ -20,6 +20,8 @@ namespace RTG
 
 	void Config::Draw()
 	{
+		ResourceHandler* p = ResourceHandler::GetInst();
+
 		const char* pButtons[ 10 ] = {	"UP",
 										"DOWN",
 										"RIGHT",
@@ -31,42 +33,40 @@ namespace RTG
 										"PAUSE",
 										"ENTER" };
 
-		ResourceHandler* p = ResourceHandler::GetInst();
-
 		// 2D描画開始
-		p->BeginDraw2D();
+		MAPIL::BeginRendering2DGraphics();
 
 		// メニュー画面表示
 		if( m_CurMenu == CONFIG_MENU_SE_VOLUME ){
-			p->DrawString2D( 100, 100, 0xFFFFFFFF, "SE Volume        %d", p->m_pGameManager->GetSEVolume() );
-			p->DrawString2D( 100, 120, 0xAAAAAAFF, "BGM Volume       %d", p->m_pGameManager->GetBGMVolume() );
-			p->DrawString2D( 100, 140, 0xAAAAAAFF, "Button Configuration" );
-			p->DrawString2D( 100, 300, 0xAAAAAAFF, "Exit" );
+			MAPIL::DrawString( 100.0f, 100.0f, 0xFFFFFFFF, "SE Volume        %d", p->m_pGameManager->GetSEVolume() );
+			MAPIL::DrawString( 100.0f, 120.0f, 0xAAAAAAFF, "BGM Volume        %d", p->m_pGameManager->GetBGMVolume() );
+			MAPIL::DrawString( 100.0f, 140.0f, 0xAAAAAAFF, "Button Configuration" );
+			MAPIL::DrawString( 100.0f, 300.0f, 0xAAAAAAFF, "Exit" );
 		}
 		else if( m_CurMenu == CONFIG_MENU_BGM_VOLUME ){
-			p->DrawString2D( 100, 100, 0xAAAAAAFF, "SE Volume        %d", p->m_pGameManager->GetSEVolume() );
-			p->DrawString2D( 100, 120, 0xFFFFFFFF, "BGM Volume       %d", p->m_pGameManager->GetBGMVolume() );
-			p->DrawString2D( 100, 140, 0xAAAAAAFF, "Button Configuration" );
-			p->DrawString2D( 100, 300, 0xAAAAAAFF, "Exit" );
+			MAPIL::DrawString( 100.0f, 100.0f, 0xAAAAAAFF, "SE Volume        %d", p->m_pGameManager->GetSEVolume() );
+			MAPIL::DrawString( 100.0f, 120.0f, 0xFFFFFFFF, "BGM Volume        %d", p->m_pGameManager->GetBGMVolume() );
+			MAPIL::DrawString( 100.0f, 140.0f, 0xAAAAAAFF, "Button Configuration" );
+			MAPIL::DrawString( 100.0f, 300.0f, 0xAAAAAAFF, "Exit" );
 		}
 		else if( m_CurMenu == CONFIG_MENU_BUTTON ){
-			p->DrawString2D( 100, 100, 0xAAAAAAFF, "SE Volume        %d", p->m_pGameManager->GetSEVolume() );
-			p->DrawString2D( 100, 120, 0xAAAAAAFF, "BGM Volume       %d", p->m_pGameManager->GetBGMVolume() );
-			p->DrawString2D( 100, 140, 0xFFFFFFFF, "Button Configuration" );
+			MAPIL::DrawString( 100.0f, 100.0f, 0xAAAAAAFF, "SE Volume        %d", p->m_pGameManager->GetSEVolume() );
+			MAPIL::DrawString( 100.0f, 120.0f, 0xAAAAAAFF, "BGM Volume        %d", p->m_pGameManager->GetBGMVolume() );
+			MAPIL::DrawString( 100.0f, 140.0f, 0xFFFFFFFF, "Button Configuration" );
 			if( m_CurButtonSelectMenu != BUTTON_SELECT_NONE ){
-				p->DrawString2D( 120, 160, 0xFFFFFFFF, "%s : %c", pButtons[ m_CurButtonSelectMenu ], p->m_pGBManager->GetAssignedDevButton( m_CurButtonSelectMenu ) );
+				MAPIL::DrawString( 100.0f, 160.0f, 0xFFFFFFFF, "%s : %c", pButtons[ m_CurButtonSelectMenu ], p->m_pGBManager->GetAssignedDevButton( m_CurButtonSelectMenu ) );
 			}
-			p->DrawString2D( 100, 300, 0xAAAAAAFF, "Exit" );
+			MAPIL::DrawString( 100.0f, 300.0f, 0xAAAAAAFF, "Exit" );
 		}
 		else if( m_CurMenu == CONFIG_MENU_EXIT ){
-			p->DrawString2D( 100, 100, 0xAAAAAAFF, "SE Volume        %d", p->m_pGameManager->GetSEVolume() );
-			p->DrawString2D( 100, 120, 0xAAAAAAFF, "BGM Volume       %d", p->m_pGameManager->GetBGMVolume() );
-			p->DrawString2D( 100, 140, 0xAAAAAAFF, "Button Configuration" );
-			p->DrawString2D( 100, 300, 0xFFFFFFFF, "Exit" );
+			MAPIL::DrawString( 100.0f, 100.0f, 0xAAAAAAFF, "SE Volume        %d", p->m_pGameManager->GetSEVolume() );
+			MAPIL::DrawString( 100.0f, 120.0f, 0xAAAAAAFF, "BGM Volume        %d", p->m_pGameManager->GetBGMVolume() );
+			MAPIL::DrawString( 100.0f, 140.0f, 0xAAAAAAFF, "Button Configuration" );
+			MAPIL::DrawString( 100.0f, 300.0f, 0xFFFFFFFF, "Exit" );
 		}
 
 		// 2D描画終了
-		p->EndDraw2D();
+		MAPIL::EndRendering2DGraphics();
 	}
 
 	void Config::Update()
