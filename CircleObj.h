@@ -14,7 +14,7 @@ namespace RTG
 	public:
 		CircleObj( const MAPIL::Vector2 < double >& vPos, double radius );
 		virtual ~CircleObj();
-		MAPIL::Vector2 < double > GetPos() const;
+		virtual MAPIL::Vector2 < double > GetPos() const;
 	};
 }
 

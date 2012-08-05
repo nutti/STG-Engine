@@ -19,7 +19,11 @@ namespace RTG
 	}
 	void ReflectedShot1::Draw()
 	{
-		MAPIL::DrawTexture( m_TextureIndex, m_Pos.m_X, m_Pos.m_Y, 0.0f );
+		ResourceHandler* p = ResourceHandler::GetInst();
+
+		MAPIL::DrawTexture(	p->GetTextureHandle( m_TextureIndex ),
+							m_Pos.m_X, m_Pos.m_Y, 0.0f,
+							0xFF7FFFD4 );
 	}
 
 	bool ReflectedShot1::Move()

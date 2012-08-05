@@ -15,9 +15,9 @@ namespace RTG
 							double speed,
 							double angle,
 							double radius,
-							int imgID ) :	CircleEnemyShot( vPos, speed, angle, radius ),
-											m_ImgID( imgID )
+							int imgID ) :	CircleEnemyShot( vPos, speed, angle, radius )
 	{
+		m_ImgID = imgID;
 	}
 
 	EnemyShot1::~EnemyShot1()
@@ -27,13 +27,15 @@ namespace RTG
 
 	void EnemyShot1::Draw()
 	{
-		MAPIL::DrawTexture(	m_ImgID, m_Pos.m_X, m_Pos.m_Y, 0.0f );
+		ResourceHandler* p = ResourceHandler::GetInst();
+
+		MAPIL::DrawTexture(	p->GetTextureHandle( m_ImgID ), m_Pos.m_X, m_Pos.m_Y, 0.0f );
 	}
 
 	bool EnemyShot1::Move()
 	{
 		m_Pos.m_X += m_Speed * cos( m_Angle );
-		m_Pos.m_Y += m_Speed * sin( m_Angle );
+		m_Pos.m_Y -= m_Speed * sin( m_Angle );
 
 		++m_Counter;
 

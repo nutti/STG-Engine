@@ -19,4 +19,9 @@ namespace RTG
 	{
 		m_Angle += 180;
 	}
+
+	int CircleEnemyShot::GetImgID()
+	{
+		return m_ImgID;
+	}
 }

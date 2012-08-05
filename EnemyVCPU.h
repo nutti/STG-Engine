@@ -14,6 +14,9 @@ namespace RTG
 	private:
 		EnemyInfo*		m_pEnemyInfo;
 
+		void SysGetPlayerPosX();
+		void SysGetPlayerPosY();
+
 		void SysGetEnemyPosX();
 		void SysGetEnemyPosY();
 		void SysGetEnemyHP();
@@ -26,6 +29,7 @@ namespace RTG
 		void SysSetEnemyHP();
 		void SysSetEnemyImgID();
 		void SysCreateEnemyShot1();
+		void SysCreateEffect1();
 	public:
 		EnemyVCPU();
 		~EnemyVCPU();

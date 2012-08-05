@@ -54,6 +54,13 @@ namespace RTG
 		ResourceScriptData			m_ResourceScriptData;		// スクリプトデータ（リソース）
 		ResourceMap					m_ResourceMap;				// スクリプトテクスチャID -> リソースハンドラID
 
+		int							m_ReflectSE;
+		int							m_BombbedSE;
+		int							m_StageBGM;
+
+		int							m_ReflectTotal;
+		int							m_KillTotal;
+
 		
 		// 非公開メソッド群
 		void UpdatePlayer();					// プレイヤーの情報を更新

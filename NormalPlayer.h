@@ -13,15 +13,16 @@ namespace RTG
 		int									m_Energy;
 		bool								m_IsReflectMode;
 		double								m_ReflectAngle;
-		MAPIL::ITexture						m_EnergyBar;
-		MAPIL::ITexture						m_HPBar;
+		int									m_HPBarTexture;
+		int									m_EnergyBarTexture;
+		int									m_ReflectModeEffectTexture;
+		int									m_PlayerTexture;
 	public:
-		NormalPlayer(	const MAPIL::Vector2 < double >& vPos,
-						MAPIL::ITexture energyBar,
-						MAPIL::ITexture hpBar );
+		NormalPlayer( const MAPIL::Vector2 < double >& vPos );
 		~NormalPlayer();
 		void Draw();
 		bool Move();
+		void Init();
 		bool DoesCollide( const CircleObj& obj );
 		bool IsReflectMode() const;
 		void DecEnergy( int val );

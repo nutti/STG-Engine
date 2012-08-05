@@ -29,7 +29,7 @@ namespace RTG
 		virtual ~CircleEnemy();
 		virtual void Draw() = 0;
 		virtual bool Move() = 0;
-		void Damage( int dec );
+		virtual void Damage( int dec );
 		int GetHP() const;
 		int GetScore() const;
 		bool IsBoss() const;

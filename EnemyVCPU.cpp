@@ -1,6 +1,7 @@
 #include "EnemyVCPU.h"
 
 #include "EnemyShot1.h"
+#include "BombedEffect1.h"
 
 namespace RTG
 {
@@ -113,12 +114,69 @@ namespace RTG
 		Pop();
 		int x = Top().m_Integer;
 		Pop();
-		m_pEnemyInfo->m_pShotList->Add( new EnemyShot1( MAPIL::Vector2 < double > ( x, y ), speed, angle, radius, imgID ) );
+		double t = MAPIL::DegToRad( angle );
+		m_pEnemyInfo->m_pShotList->Add( new EnemyShot1( MAPIL::Vector2 < double > ( x, y ), speed, t, radius, imgID ) );
+	}
+
+	void EnemyVCPU::SysGetPlayerPosX()
+	{
+		Pop();
+
+		TaskList < CirclePlayer >::Iterator it( m_pEnemyInfo->m_pPlayerList );
+		TaskList < CirclePlayer >::Iterator itEnd( m_pEnemyInfo->m_pPlayerList );
+		itEnd.End();
+
+		int result = 0;
+
+		// プレイヤーの情報の更新
+		for( it.Begin(); it != itEnd; ++it ){
+			result = static_cast < int > ( ( *it ).GetPos().m_X );
+		}
+
+		Push( result );
+	}
+
+	void EnemyVCPU::SysGetPlayerPosY()
+	{
+		Pop();
+
+		TaskList < CirclePlayer >::Iterator it( m_pEnemyInfo->m_pPlayerList );
+		TaskList < CirclePlayer >::Iterator itEnd( m_pEnemyInfo->m_pPlayerList );
+		itEnd.End();
+
+		int result = 0;
+
+		// プレイヤーの情報の更新
+		for( it.Begin(); it != itEnd; ++itEnd ){
+			result = static_cast < int > ( ( *it ).GetPos().m_Y );
+		}
+
+		Push( result );
+	}
+
+	void EnemyVCPU::SysCreateEffect1()
+	{
+		Pop();
+
+		int id = Top().m_Integer;
+		Pop();
+		int y = Top().m_Integer;
+		Pop();
+		int x = Top().m_Integer;
+		Pop();
+
+		m_pEnemyInfo->m_pEffect2DList->Add( new BombedEffect1( MAPIL::Vector2 < float > ( x, y ), 0.1f, 0.2f, id ) );
 	}
 
 	void EnemyVCPU::OpSysCall( int val )
 	{
 		switch( val ){
+			case VM::SYS_GET_PLAYER_POSX:
+				SysGetPlayerPosX();
+				break;
+			case VM::SYS_GET_PLAYER_POSY:
+				SysGetPlayerPosY();
+				break;
 			case VM::SYS_ENEMY_GET_POSX:
 				SysGetEnemyPosX();
 				break;
@@ -151,6 +209,9 @@ namespace RTG
 				break;
 			case VM::SYS_ENEMY_SET_IMAGE:
 				SysSetEnemyImgID();
+				break;
+			case VM::SYS_ENEMY_CREATE_EFFECT_1:
+				SysCreateEffect1();
 				break;
 			default:
 				VM::VCPU::OpSysCall( val );

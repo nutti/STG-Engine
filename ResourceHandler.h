@@ -6,6 +6,8 @@
 #include "Score.h"
 #include "SaveDataManager.h"
 #include "ReplaySaver.h"
+#include "ScriptCompiler.h"
+
 
 namespace RTG
 {
@@ -19,6 +21,14 @@ namespace RTG
 		int		m_Frame;
 	};
 
+	// リソース対応関係
+	struct ResourceMap
+	{
+		std::vector < int >		m_BGMMap;			// BGM
+		std::vector < int >		m_SEMap;			// SE
+		std::vector < int >		m_TextureMap;		// テクスチャ
+	};
+
 	class GeneralButtonManager;
 	struct ReplayEntry;
 	class GameManager;
@@ -28,6 +38,10 @@ namespace RTG
 	private:
 		// デバッグ関連
 		MAPIL::Console						m_Cons;		// コンソールデバイス
+
+		// リソース関連
+		ResourceMap							m_ResourceMap;
+		ResourceScriptData					m_ResourceScriptData;
 
 		// メモリ関連
 		MAPIL::Allocator < 3000, 4000 >		m_Alloc;				// アロケータ
@@ -52,6 +66,12 @@ namespace RTG
 	
 		void* AllocMemory();					// メモリの割り当て
 		void ReleaseMemory( void* p );			// メモリの開放
+
+		void SetupHandle();
+
+		int GetTextureHandle( int index );
+		int GetBGMHandle( int index );
+		int GetSEHandle( int index );
 	};
 }
 

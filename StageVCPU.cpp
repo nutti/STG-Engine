@@ -37,7 +37,8 @@ namespace RTG
 		Pop();
 		ScriptedEnemy* pNewEnemy = new ScriptedEnemy(	m_pStageInfo->m_pCompiler,
 														id,
-														m_pStageInfo->m_pEnemyShotList, x, y );
+														m_pStageInfo->m_pEnemyShotList,
+														m_pStageInfo->m_pEffect2DList, x, y, m_pStageInfo->m_pPlayerList );
 		pNewEnemy->Init();
 		m_pStageInfo->m_pEnemyList->Add( pNewEnemy );
 	}

@@ -11,14 +11,12 @@ namespace RTG
 		float							m_Radius;
 		int								m_Count;
 		double							m_Speed;
-		MAPIL::ISprite					m_Sprite;
-		MAPIL::ITexture					m_Texture;
+		int								m_ImgID;
 	public:
-		BombedEffect1(	MAPIL::ISprite sprite,
-						MAPIL::ITexture texture,
-						MAPIL::Vector2 < float >& vPos,
+		BombedEffect1(	MAPIL::Vector2 < float >& vPos,
 						float radius,
-						double speed );
+						double speed,
+						int imgID );
 		~BombedEffect1();
 		bool Update();
 		void Draw();

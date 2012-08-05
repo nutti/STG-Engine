@@ -4,6 +4,8 @@
 #include "TaskList.hpp"
 #include "CircleEnemyShot.h"
 #include "CircleEnemy.h"
+#include "NormalPlayer.h"
+#include "Effect2D.h"
 
 namespace RTG
 {
@@ -11,6 +13,8 @@ namespace RTG
 	struct EnemyInfo
 	{
 		TaskList < CircleEnemyShot >*	m_pShotList;
+		TaskList < CirclePlayer >*		m_pPlayerList;
+		TaskList < Effect2D >*			m_pEffect2DList;
 		double							m_Angle;
 		int								m_Counter;
 		double							m_Speed;
@@ -27,16 +31,11 @@ namespace RTG
 		ScriptCompiler*					m_pCompiler;
 		TaskList < CircleEnemy >*		m_pEnemyList;
 		TaskList < CircleEnemyShot >*	m_pEnemyShotList;
+		TaskList < CirclePlayer >*		m_pPlayerList;
+		TaskList < Effect2D >*			m_pEffect2DList;
 		int*							m_pFrame;
 	};
 
-	// リソース対応関係
-	struct ResourceMap
-	{
-		std::vector < int >		m_BGMMap;			// BGM
-		std::vector < int >		m_SEMap;			// SE
-		std::vector < int >		m_TextureMap;		// テクスチャ
-	};
 }
 
 #endif

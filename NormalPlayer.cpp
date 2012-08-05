@@ -5,15 +5,11 @@
 
 namespace RTG
 {
-	NormalPlayer::NormalPlayer( const MAPIL::Vector2 < double >& vPos,
-								MAPIL::ITexture energyBar,
-								MAPIL::ITexture hpBar ) :	CirclePlayer( vPos, 3.0f ),
+	NormalPlayer::NormalPlayer( const MAPIL::Vector2 < double >& vPos ) :	CirclePlayer( vPos, 3.0f ),
 																			MOVE_VELOCITY( 3.0f ),
 																			m_Energy( 20000 ),
 																			m_IsReflectMode( false ),
-																			m_ReflectAngle( 0.0 ),
-																			m_EnergyBar( energyBar ),
-																			m_HPBar( hpBar )
+																			m_ReflectAngle( 0.0 )
 	{
 		m_HP = 100;
 	}
@@ -23,28 +19,26 @@ namespace RTG
 		m_Energy = 0;
 		m_IsReflectMode = false;
 		m_ReflectAngle = 0.0;
+		MAPIL::DeleteTexture( m_HPBarTexture );
+		MAPIL::DeleteTexture( m_EnergyBarTexture );
 	}
 
 	void NormalPlayer::Draw()
 	{
 
-		MAPIL::DrawTexture( 1, m_Pos.m_X, m_Pos.m_Y, m_ReflectAngle );
+		MAPIL::DrawTexture( m_PlayerTexture, m_Pos.m_X, m_Pos.m_Y, m_ReflectAngle - 1.57 );
 
 
 		if( m_IsReflectMode ){
 			float scale = m_Energy / 10000.0f;
-			MAPIL::DrawTexture( 0, m_Pos.m_X, m_Pos.m_Y, 0.0f );
+			MAPIL::DrawTexture( m_ReflectModeEffectTexture, m_Pos.m_X, m_Pos.m_Y, scale, scale, 0.0f );
 		}
 
 		// 情報表示
 		// エネルギーバー
-		float scale = m_Energy / 5000.0f;
-		//MAPIL::CreateScalingMat( &scaleMat, scale, 0.2f );
-		MAPIL::DrawTexture( 0, 1.0f, 460.0f, 0.0f );
+		MAPIL::DrawTextureNonCentering( m_EnergyBarTexture, 10.0f, 460.0f, m_Energy / 5000.0f, 0.2f, 0.0f );
 		// HPバー
-		//scale = m_HP / 25.0f;
-		//MAPIL::CreateScalingMat( &scaleMat, scale, 0.2f );
-		MAPIL::DrawTexture( 0, 1.0f, 450.0f, 0.0f );
+		MAPIL::DrawTextureNonCentering( m_HPBarTexture, 10.0f, 450.0f, m_HP / 25.0f, 0.2f, 0.0f );
 	}
 
 	bool NormalPlayer::Move()
@@ -162,5 +156,13 @@ namespace RTG
 	double NormalPlayer::GetReflectAngle() const
 	{
 		return m_ReflectAngle;
+	}
+
+	void NormalPlayer::Init()
+	{
+		m_EnergyBarTexture = MAPIL::CreateTexture( "Resource/EnergyBar.png" );
+		m_HPBarTexture = MAPIL::CreateTexture( "Resource/HPBar.png" );
+		m_ReflectModeEffectTexture = MAPIL::CreateTexture( "Resource/ReflectModeEffect.png" );
+		m_PlayerTexture = MAPIL::CreateTexture( "Resource/NormalPlayer.png" );
 	}
 }

@@ -2,6 +2,7 @@
 #define INCLUDED_RTG_SCRIPTEDENEMY_H
 
 #include "CircleEnemy.h"
+#include "Effect2D.h"
 
 #include "EnemyVCPU.h"
 
@@ -27,12 +28,16 @@ namespace RTG
 		ScriptedEnemy(	ScriptCompiler* pCompiler,
 						int id,
 						TaskList < CircleEnemyShot >* pList,
+						TaskList < Effect2D >* pEffectList,
 						int x,
-						int y );
+						int y,
+						TaskList < CirclePlayer >* pPlayerList );
 		~ScriptedEnemy();
 		void Draw();
 		bool Move();
+		void Damage( int dec );
 		void Init();
+		MAPIL::Vector2 < double > GetPos() const;
 	};
 }
 

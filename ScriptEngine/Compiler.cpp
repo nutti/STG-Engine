@@ -20,6 +20,11 @@ bool Compiler::Compile( const std::string& f, VM::Data& data )
 	AddFunction( VM::SYS_PRINT, TYPE_VOID, "print", "s" );
 	AddFunction( VM::SYS_TOSTR, TYPE_STRING, "str", "i" );
 
+	AddFunction( VM::SYS_ATAN2, TYPE_INTEGER, "atan2", "ii" );			// int atan2( y, x );
+
+	AddFunction( VM::SYS_GET_PLAYER_POSX, TYPE_INTEGER, "GetPlayerPosX", "" );				// int GetPlayerPosX();
+	AddFunction( VM::SYS_GET_PLAYER_POSY, TYPE_INTEGER, "GetPlayerPosY", "" );				// int GetPlayerPosY();
+
 	// System call for enemy.
 	AddFunction( VM::SYS_ENEMY_GET_POSX, TYPE_INTEGER, "GetEnemyPosX", "" );				// int GetEnemyPosX();
 	AddFunction( VM::SYS_ENEMY_GET_POSY, TYPE_INTEGER, "GetEnemyPosY", "" );				// int GetEnemyPosY();
@@ -33,6 +38,7 @@ bool Compiler::Compile( const std::string& f, VM::Data& data )
 	AddFunction( VM::SYS_ENEMY_SET_HP, TYPE_VOID, "SetEnemyHP", "i" );						// void SetEnemyHP( hp );
 	AddFunction( VM::SYS_ENEMY_SET_IMAGE, TYPE_VOID, "SetEnemyImgID", "i" );				// void SetEnemyImage( texture_id );
 	AddFunction( VM::SYS_ENEMY_CREATE_SHOT_1, TYPE_VOID, "CreateEnemyShot1", "iiiiii" );	// void CreateEnemyShot1( x, y, speed, angle, radius, texture_id );
+	AddFunction( VM::SYS_ENEMY_CREATE_EFFECT_1, TYPE_VOID, "CreateEffect1", "iii" );		// void CreateEffect1( x, y, texture_id );
 
 	// System call for stage.
 	AddFunction( VM::SYS_STAGE_ADD_ENEMY, TYPE_VOID, "AddEnemy", "i" );					// void AddEnemy( script_id );

@@ -6,6 +6,8 @@
 #include <Windows.h>
 #include "VMValue.h"
 
+#include "../Defines.h"
+
 #ifdef _MSC_VER
 #pragma warning( disable: 4996 )
 #endif
@@ -28,6 +30,11 @@ namespace VM
 
 		SYS_UPDATE,					// Force updating.
 
+		SYS_ATAN2,					// Call math library atan2().
+
+		SYS_GET_PLAYER_POSX,		// Get player position. ( X )
+		SYS_GET_PLAYER_POSY,		// Get player position. ( Y )
+
 		// For enemy script.
 		SYS_ENEMY_GET_POSX,			// Get position. ( X )
 		SYS_ENEMY_GET_POSY,			// Get position. ( Y )
@@ -41,6 +48,7 @@ namespace VM
 		SYS_ENEMY_SET_HP,			// Set HP.
 		SYS_ENEMY_SET_IMAGE,		// Set image.
 		SYS_ENEMY_CREATE_SHOT_1,	// Create enemy shot. (Linear)
+		SYS_ENEMY_CREATE_EFFECT_1,	// Create effect. (Bombbed Effect.)
 
 		// For stage script.
 		SYS_STAGE_ADD_ENEMY,		// Add enemy.
@@ -493,6 +501,10 @@ namespace VM
 			m_HasUpdateReq = true;
 		}
 
+		void SysAtan2();
+
+		
+
 		virtual void OpSysCall( int val )
 		{
 			Pop();
@@ -505,6 +517,9 @@ namespace VM
 					break;
 				case SYS_UPDATE:
 					SysUpdate();
+					break;
+				case SYS_ATAN2:
+					SysAtan2();
 					break;
 			}
 		}

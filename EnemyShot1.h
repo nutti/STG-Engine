@@ -8,7 +8,6 @@ namespace RTG
 	class EnemyShot1 : public CircleEnemyShot
 	{
 	private:
-		int		m_ImgID;
 	public:
 		EnemyShot1(	const MAPIL::Vector2 < double >& vPos,
 					double speed,

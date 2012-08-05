@@ -8,6 +8,7 @@ namespace RTG
 	class CircleEnemyShot : public CircleObj
 	{
 	public:
+		int		m_ImgID;
 		int							m_Counter;
 		double						m_Speed;
 		double						m_Angle;
@@ -20,6 +21,7 @@ namespace RTG
 		virtual void Draw() = 0;
 		virtual bool Move() = 0;
 		void Reflect();
+		int GetImgID();
 	};
 }
 
