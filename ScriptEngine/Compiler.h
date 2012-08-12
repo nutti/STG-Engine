@@ -2,7 +2,7 @@
 #define INCLUDED_COMPILER_H
 
 
-//#define _DEBUG
+#define _DEBUG
 
 #include "Parser.hh"
 #include "VM.h"
@@ -23,7 +23,10 @@ class VMCode
 public:
 	unsigned char	m_Size;
 	unsigned char	m_OP;
-	int				m_Arg1;
+	union{
+		int				m_Arg1;
+		float			m_FArg1;
+	};
 public:
 	VMCode( unsigned char op ) :	m_Size( 1 ),
 									m_OP( op ),
@@ -33,6 +36,11 @@ public:
 	VMCode( unsigned char op, int arg1 ) :	m_Size( 5 ),
 											m_OP( op ),
 											m_Arg1( arg1 )
+	{
+	}
+	VMCode( unsigned char op, float arg1 ) :	m_Size( 5 ),
+												m_OP( op ),
+												m_FArg1( arg1 )
 	{
 	}
 	unsigned char* Get( unsigned char* p ) const
@@ -194,6 +202,10 @@ public:
 					case 'S':
 					case 's':
 						m_Args.push_back( TYPE_STRING );
+						break;
+					case 'F':
+					case 'f':
+						m_Args.push_back( TYPE_FLOAT );
 						break;
 					default:
 						return false;

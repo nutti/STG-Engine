@@ -60,6 +60,7 @@ namespace RTG
 
 		int							m_ReflectTotal;
 		int							m_KillTotal;
+		int							m_HitTotal;
 
 		
 		// 非公開メソッド群

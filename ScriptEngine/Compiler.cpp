@@ -20,30 +20,45 @@ bool Compiler::Compile( const std::string& f, VM::Data& data )
 	AddFunction( VM::SYS_PRINT, TYPE_VOID, "print", "s" );
 	AddFunction( VM::SYS_TOSTR, TYPE_STRING, "str", "i" );
 
-	AddFunction( VM::SYS_ATAN2, TYPE_INTEGER, "atan2", "ii" );			// int atan2( y, x );
+	AddFunction( VM::SYS_FLOAT_TO_INT, TYPE_INTEGER, "FtoI", "f" );		// int FtoI( float );
+	AddFunction( VM::SYS_INT_TO_FLOAT, TYPE_FLOAT, "ItoF", "i" );		// float ItoF( int );
 
-	AddFunction( VM::SYS_GET_PLAYER_POSX, TYPE_INTEGER, "GetPlayerPosX", "" );				// int GetPlayerPosX();
-	AddFunction( VM::SYS_GET_PLAYER_POSY, TYPE_INTEGER, "GetPlayerPosY", "" );				// int GetPlayerPosY();
+	AddFunction( VM::SYS_SIN, TYPE_FLOAT, "sin", "f" );					// float sin( rad );
+	AddFunction( VM::SYS_COS, TYPE_FLOAT, "cos", "f" );					// float cos( rad );
+	AddFunction( VM::SYS_ATAN2, TYPE_FLOAT, "atan2", "ff" );			// float atan2( y, x );
+
+	AddFunction( VM::SYS_DEG_TO_RAD, TYPE_FLOAT, "DegToRad", "f" );		// float DegToRad();
+
+	AddFunction( VM::SYS_GET_PLAYER_POSX, TYPE_FLOAT, "GetPlayerPosX", "" );				// float GetPlayerPosX();
+	AddFunction( VM::SYS_GET_PLAYER_POSY, TYPE_FLOAT, "GetPlayerPosY", "" );				// float GetPlayerPosY();
+	AddFunction( VM::SYS_GET_RANDOM_F, TYPE_FLOAT, "GetRandF", "" );							// float GatRand();
+
+	AddFunction( VM::SYS_PLAY_SE, TYPE_VOID, "PlaySE", "i" );			// void PlaySE( id );
+	AddFunction( VM::SYS_STOP_SE, TYPE_VOID, "StopSE", "i" );			// void StopSE( id );
+	AddFunction( VM::SYS_PLAY_BGM, TYPE_VOID, "PlayBGM", "i" );	// void PlayBGM( id );
+	AddFunction( VM::SYS_STOP_BGM, TYPE_VOID, "StopBGM", "i" );	// void StopBGM( id );
 
 	// System call for enemy.
-	AddFunction( VM::SYS_ENEMY_GET_POSX, TYPE_INTEGER, "GetEnemyPosX", "" );				// int GetEnemyPosX();
-	AddFunction( VM::SYS_ENEMY_GET_POSY, TYPE_INTEGER, "GetEnemyPosY", "" );				// int GetEnemyPosY();
+	AddFunction( VM::SYS_ENEMY_GET_POSX, TYPE_FLOAT, "GetEnemyPosX", "" );				// float GetEnemyPosX();
+	AddFunction( VM::SYS_ENEMY_GET_POSY, TYPE_FLOAT, "GetEnemyPosY", "" );				// float GetEnemyPosY();
 	AddFunction( VM::SYS_ENEMY_GET_HP, TYPE_INTEGER, "GetEnemyHP", "" );					// int GetEnemyHP();
 	AddFunction( VM::SYS_ENEMY_GET_SPEED, TYPE_INTEGER, "GetEnemySpeed", "" );				// int GetEnemySpeed();
 	AddFunction( VM::SYS_ENEMY_GET_COUNTER, TYPE_INTEGER, "GetEnemyCounter", "" );			// int GetEnemyCounter();
+	AddFunction( VM::SYS_ENEMY_GET_COUNTER_F, TYPE_FLOAT, "GetEnemyCounterF", "" );			// float GetEnemyCounterF();
 	AddFunction( VM::SYS_ENEMY_SET_ANGLE, TYPE_INTEGER, "GetEnemyAngle", "" );				// int GetEnemyAngle();
-	AddFunction( VM::SYS_ENEMY_SET_POS, TYPE_VOID, "SetEnemyPos", "ii" );					// void SetEnemyPos( x, y );
+	AddFunction( VM::SYS_ENEMY_SET_POS, TYPE_VOID, "SetEnemyPos", "ff" );					// void SetEnemyPos( x, y );
 	AddFunction( VM::SYS_ENEMY_SET_ANGLE, TYPE_VOID, "SetEnemyAngle", "i" );				// void SetEnemyAngle( angle );
 	AddFunction( VM::SYS_ENEMY_SET_SPEED, TYPE_VOID, "SetEnemySpeed", "i" );				// void SetEnemySpeed( speed );
 	AddFunction( VM::SYS_ENEMY_SET_HP, TYPE_VOID, "SetEnemyHP", "i" );						// void SetEnemyHP( hp );
 	AddFunction( VM::SYS_ENEMY_SET_IMAGE, TYPE_VOID, "SetEnemyImgID", "i" );				// void SetEnemyImage( texture_id );
-	AddFunction( VM::SYS_ENEMY_CREATE_SHOT_1, TYPE_VOID, "CreateEnemyShot1", "iiiiii" );	// void CreateEnemyShot1( x, y, speed, angle, radius, texture_id );
-	AddFunction( VM::SYS_ENEMY_CREATE_EFFECT_1, TYPE_VOID, "CreateEffect1", "iii" );		// void CreateEffect1( x, y, texture_id );
+	AddFunction( VM::SYS_ENEMY_CREATE_SHOT_1, TYPE_VOID, "CreateEnemyShot1", "fffffi" );	// void CreateEnemyShot1( x, y, speed, angle, radius, texture_id );
+	AddFunction( VM::SYS_ENEMY_CREATE_EFFECT_1, TYPE_VOID, "CreateEffect1", "ffi" );		// void CreateEffect1( x, y, texture_id );
 
 	// System call for stage.
 	AddFunction( VM::SYS_STAGE_ADD_ENEMY, TYPE_VOID, "AddEnemy", "i" );					// void AddEnemy( script_id );
-	AddFunction( VM::SYS_STAGE_ADD_ENEMY_INIPOS, TYPE_VOID, "AddEnemyIniPos", "iii" );	// void AddEnemyIniPos( script_id, x, y );
+	AddFunction( VM::SYS_STAGE_ADD_ENEMY_INIPOS, TYPE_VOID, "AddEnemyIniPos", "iff" );	// void AddEnemyIniPos( script_id, x, y );
 	AddFunction( VM::SYS_STAGE_GET_FRAME, TYPE_INTEGER, "GetFrame", "" );				// int GetFrame();
+	AddFunction( VM::SYS_STAGE_SET_FRAME, TYPE_VOID, "SetFrame", "i" );					// void SetFrame( frame );
 	AddFunction( VM::SYS_UPDATE, TYPE_VOID, "Update", "" );								// void Update();
 
 	// Global variables.
@@ -225,7 +240,7 @@ void Compiler::AddValue( const yy::location& location, int type, const std::stri
 {
 	int size = 1;
 	if( pNode ){
-		if( pNode->GetOP() != OP_CONST ){
+		if( pNode->GetOP() != OP_INT_CONST || pNode->GetOP() != OP_FLOAT_CONST ){
 			error( location, "Array size must be constant." );
 		}
 		else if( pNode->GetValue() <= 0 ){

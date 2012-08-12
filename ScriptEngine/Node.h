@@ -80,11 +80,12 @@ typedef NodeList < Statement >		StateList;
 // Type information
 enum
 {
-	TYPE_INTEGER,		// Integer
-	TYPE_STRING,		// String
-	TYPE_INTEGER_REF,	// Reference to integer
-	TYPE_STRING_REF,	// Reference to string
-	TYPE_VOID,		// Void
+	TYPE_INTEGER = 0,		// Integer
+	TYPE_STRING = 1,		// String
+	TYPE_INTEGER_REF = 2,	// Reference to integer
+	TYPE_STRING_REF = 3,	// Reference to string
+	TYPE_FLOAT = 4,			// Float.
+	TYPE_VOID = 5,		// Void
 };
 
 // Change to reference.
@@ -116,6 +117,8 @@ enum
 	OP_LE,
 	OP_VALUE,
 	OP_CONST,
+	OP_FLOAT_CONST,
+	OP_INT_CONST,
 	OP_STRING,
 	OP_FUNCTION,
 };
@@ -126,7 +129,10 @@ class Node
 protected:
 	const yy::location	m_Location;
 	int			m_OP;
-	int			m_Value;
+	union{
+		int			m_Value;
+		float		m_FValue;
+	};
 	std::string*		m_pString;
 	Node*			m_pLeft;
 	Node*			m_pRight;
@@ -141,6 +147,14 @@ public:
 																m_OP( op ), m_Value( value ),
 																m_pString( 0 ),
 																m_pLeft( 0 ), m_pRight( 0 )
+	{
+	}
+	Node( const yy::location& location, int op, float value ) :	m_Location( location ),
+																m_OP( op ),
+																m_FValue( value ),
+																m_pString( 0 ),
+																m_pLeft( 0 ),
+																m_pRight( 0 )
 	{
 	}
 	Node( const yy::location& location, int op, std::string* pStr ) :	m_Location( location ),

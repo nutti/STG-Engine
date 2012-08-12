@@ -11,6 +11,8 @@ namespace RTG
 
 	int Rand( int posX, int posY, int score, int hitTotal, int reflectTotal, int frame );
 
+	int Rand();
+
 	void ResetRandSeed();
 }
 

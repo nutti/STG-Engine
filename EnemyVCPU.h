@@ -16,12 +16,15 @@ namespace RTG
 
 		void SysGetPlayerPosX();
 		void SysGetPlayerPosY();
+		
+		void SysGetRandF();
 
 		void SysGetEnemyPosX();
 		void SysGetEnemyPosY();
 		void SysGetEnemyHP();
 		void SysGetEnemySpeed();
 		void SysGetEnemyCounter();
+		void SysGetEnemyCounterF();
 		void SysGetEnemyAngle();
 		void SysSetEnemyPos();
 		void SysSetEnemyAngle();

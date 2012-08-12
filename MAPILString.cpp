@@ -7,6 +7,11 @@ namespace RTG
 	{
 	}
 
+	MAPILString::MAPILString() :	m_Texture(),
+									m_Sprite()
+	{
+	}
+
 	MAPILString::~MAPILString()
 	{
 	}

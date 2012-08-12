@@ -43,7 +43,6 @@
 #include <iostream>
 #include "stack.hh"
 #include "Node.h"
-#include "Parser.hh"
 
 /* Line 35 of lalr1.cc  */
 #line 1 "[Bison:b4_percent_define_default]"
@@ -125,6 +124,7 @@ namespace yy {
 
 	int		m_IntVal;
 	std::string*	m_pStrVal;
+	float	m_FloatVal;
 	int		m_Type;
 	ValueList*	m_pValueList;
 	ArgList*	m_pArgList;
@@ -141,7 +141,7 @@ namespace yy {
 
 
 /* Line 35 of lalr1.cc  */
-#line 144 "Parser.hh"
+#line 145 "Parser.hh"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -157,32 +157,34 @@ namespace yy {
      TOKEN_IVAL = 258,
      TOKEN_IDENTIFIER = 259,
      TOKEN_SVAL = 260,
-     TOKEN_LOGOR = 261,
-     TOKEN_LOGAND = 262,
-     TOKEN_EQ = 263,
-     TOKEN_NE = 264,
-     TOKEN_GE = 265,
-     TOKEN_LE = 266,
-     TOKEN_LSHIFT = 267,
-     TOKEN_RSHIFT = 268,
-     TOKEN_ADDASSIGN = 269,
-     TOKEN_SUBASSIGN = 270,
-     TOKEN_MULASSIGN = 271,
-     TOKEN_DIVASSIGN = 272,
-     TOKEN_MODASSIGN = 273,
-     TOKEN_IF = 274,
-     TOKEN_ELSE = 275,
-     TOKEN_WHILE = 276,
-     TOKEN_FOR = 277,
-     TOKEN_SWITCH = 278,
-     TOKEN_CASE = 279,
-     TOKEN_DEFAULT = 280,
-     TOKEN_BREAK = 281,
-     TOKEN_RETURN = 282,
-     TOKEN_INTEGER = 283,
-     TOKEN_STRING = 284,
-     TOKEN_VOID = 285,
-     NEG = 286
+     TOKEN_FVAL = 261,
+     TOKEN_LOGOR = 262,
+     TOKEN_LOGAND = 263,
+     TOKEN_EQ = 264,
+     TOKEN_NE = 265,
+     TOKEN_GE = 266,
+     TOKEN_LE = 267,
+     TOKEN_LSHIFT = 268,
+     TOKEN_RSHIFT = 269,
+     TOKEN_ADDASSIGN = 270,
+     TOKEN_SUBASSIGN = 271,
+     TOKEN_MULASSIGN = 272,
+     TOKEN_DIVASSIGN = 273,
+     TOKEN_MODASSIGN = 274,
+     TOKEN_IF = 275,
+     TOKEN_ELSE = 276,
+     TOKEN_WHILE = 277,
+     TOKEN_FOR = 278,
+     TOKEN_SWITCH = 279,
+     TOKEN_CASE = 280,
+     TOKEN_DEFAULT = 281,
+     TOKEN_BREAK = 282,
+     TOKEN_RETURN = 283,
+     TOKEN_INTEGER = 284,
+     TOKEN_STRING = 285,
+     TOKEN_FLOAT = 286,
+     TOKEN_VOID = 287,
+     NEG = 288
    };
 
     };
@@ -359,7 +361,7 @@ namespace yy {
 } // yy
 
 /* Line 35 of lalr1.cc  */
-#line 362 "Parser.hh"
+#line 365 "Parser.hh"
 
 
 

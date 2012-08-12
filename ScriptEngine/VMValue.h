@@ -33,40 +33,53 @@ namespace VM
 		}
 	};
 
+	const int VM_VALUE_TYPE_INTEGER	= 0;
+	const int VM_VALUE_TYPE_FLOAT		= 1;
+	const int VM_VALUE_TYPE_STRING	= 2;
+	
 	class Value
 	{
-		enum
+	public:
+		
+		/*enum
 		{
 			TYPE_INTEGER,
 			TYPE_STRING,
-		};
+			TYPE_FLOAT,
+		};*/
 	public:
 		union
 		{
 			string*		m_pString;
 			int			m_Integer;
+			float		m_Float;
 		};
 		char	m_Type;
 	public:
 		Value()
 		{
 			m_pString = 0;
-			m_Type = TYPE_INTEGER;
+			m_Type = VM_VALUE_TYPE_INTEGER;
 		}
 		Value( int iVal )
 		{
 			m_Integer = iVal;
-			m_Type = TYPE_INTEGER;
+			m_Type = VM_VALUE_TYPE_INTEGER;
+		}
+		Value( float fVal )
+		{
+			m_Float = fVal;
+			m_Type = VM_VALUE_TYPE_FLOAT;
 		}
 		Value( const std::string& str )
 		{
 			m_pString = new string( str );
-			m_Type = TYPE_STRING;
+			m_Type = VM_VALUE_TYPE_STRING;
 		}
 		Value( string* p )
 		{
 			m_pString = p;
-			m_Type = TYPE_STRING;
+			m_Type = VM_VALUE_TYPE_STRING;
 		}
 		~Value()
 		{
@@ -87,7 +100,7 @@ namespace VM
 		}
 		void Clear()
 		{
-			if( m_Type == TYPE_STRING ){
+			if( m_Type == VM_VALUE_TYPE_STRING ){
 				m_pString->Release();
 			}
 		}
@@ -95,11 +108,13 @@ namespace VM
 		{
 			m_Type = v.m_Type;
 			m_pString = v.m_pString;
-			if( m_Type == TYPE_STRING ){
+			if( m_Type == VM_VALUE_TYPE_STRING ){
 				m_pString->AddRef();
 			}
 		}
 	};
+
+
 
 	class StackOverflow : public std::exception
 	{
@@ -165,6 +180,8 @@ namespace VM
 		const T& operator[]( int index ) const { return *( const T* ) m_Data[ index ]; }
 		T& operator[]( int index ) { return *( T* ) m_Data[ index ]; }
 	};
+
+	
 
 }
 

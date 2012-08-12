@@ -26,17 +26,19 @@ namespace RTG
 									TaskList < Effect2D >* pEffectList,
 									int x,
 									int y,
-									TaskList < CirclePlayer >* pPlayerList )	:	CircleEnemy(	pList,
-																									MAPIL::Vector2 < double > ( x, y ),
-																									1.0, 0.0, 4.0, 5, 100 ),
-																					m_pCompiler( pCompiler ),
-																					m_pScriptCmd( NULL ),
-																					m_ScriptID( id ),
-																					m_VirtualMachine()
+									TaskList < CirclePlayer >* pPlayerList,
+									StageInfo* pInfo )	:	CircleEnemy(	pList,
+																			MAPIL::Vector2 < double > ( x, y ),
+																			1.0, 0.0, 4.0, 5, 100 ),
+															m_pCompiler( pCompiler ),
+															m_pScriptCmd( NULL ),
+															m_ScriptID( id ),
+															m_VirtualMachine()
 	{
 		MAPIL::ZeroObject( &m_EnemyInfo, sizeof( m_EnemyInfo ) );
 		m_EnemyInfo.m_pPlayerList = pPlayerList;
 		m_EnemyInfo.m_pEffect2DList = pEffectList;
+		m_EnemyInfo.m_pRandSeed = pInfo->m_pRandSeed;
 	}
 
 	ScriptedEnemy::~ScriptedEnemy()

@@ -13,6 +13,7 @@ namespace RTG
 											m_pReplayEntry( NULL ),
 											m_pGameManager( NULL )
 	{
+		m_pScore = new Score();
 	}
 
 	ResourceHandler::~ResourceHandler()
@@ -39,17 +40,42 @@ namespace RTG
 	{
 		// 各種リソースの読み込み
 		const int INITIAL_TEXTURE_MAP_RESERVE_CAP = 50;			// 初期のテクスチャMAP許容量
+		const int INITIAL_SE_MAP_RESERVE_CAP = 50;				// 初期のSEMAP許容量
+		const int INITIAL_BGM_MAP_RESERVE_CAP = 50;				// 初期のBGMMAP許容量
 		m_ResourceMap.m_TextureMap.resize( INITIAL_TEXTURE_MAP_RESERVE_CAP );
+		m_ResourceMap.m_SEMap.resize( INITIAL_SE_MAP_RESERVE_CAP );
+		m_ResourceMap.m_BGMMap.resize( INITIAL_BGM_MAP_RESERVE_CAP );
 		m_ResourceScriptData = m_pCompiler->GetResourceScriptData();
 		// テクスチャの読み込み
 		typedef std::map < int, std::string > ::iterator	TextureIter;
-		TextureIter it = m_ResourceScriptData.m_TextureList.begin();
-		for( ; it != m_ResourceScriptData.m_TextureList.end(); ++it ){
+		for(	TextureIter it = m_ResourceScriptData.m_TextureList.begin();
+				it != m_ResourceScriptData.m_TextureList.end();
+				++it ){
 			// 許容値を超えたインデックスが必要な場合は、指定されたインデックスの2倍のサイズのresizeする。
 			if( it->first > m_ResourceMap.m_TextureMap.size() ){
 				m_ResourceMap.m_TextureMap.resize( it->first * 2 );
 			}
 			m_ResourceMap.m_TextureMap[ it->first ] = MAPIL::CreateTexture( it->second.c_str() );
+		}
+		// SEの読み込み
+		typedef std::map < int, std::string > ::iterator	SEIter;
+		for(	SEIter it = m_ResourceScriptData.m_SEList.begin();
+				it != m_ResourceScriptData.m_SEList.end();
+				++it ){
+			if( it->first > m_ResourceMap.m_SEMap.size() ){
+				m_ResourceMap.m_SEMap.resize( it->first * 2 );
+			}
+			m_ResourceMap.m_SEMap[ it->first ] = MAPIL::CreateStaticBuffer( it->second.c_str() );
+		}
+		// BGMの読み込み
+		typedef std::map < int, std::string > ::iterator	BGMIter;
+		for(	BGMIter it = m_ResourceScriptData.m_BGMList.begin();
+				it != m_ResourceScriptData.m_BGMList.end();
+				++it ){
+			if( it->first > m_ResourceMap.m_BGMMap.size() ){
+				m_ResourceMap.m_BGMMap.resize( it->first * 2 );
+			}
+			m_ResourceMap.m_BGMMap[ it->first ] = MAPIL::CreateStreamingBuffer( it->second.c_str() );
 		}
 	}
 

@@ -11,6 +11,7 @@ namespace RTG
 		MAPIL::ISprite			m_Sprite;		// Sprite for displaying the string.
 	public:
 		MAPILString( MAPIL::ITexture texture, MAPIL::ISprite sprite );
+		MAPILString();
 		~MAPILString();
 		void Display( char c, float x, float y ) const;
 	};

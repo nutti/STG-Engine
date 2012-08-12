@@ -3,6 +3,8 @@
 #include "EnemyShot1.h"
 #include "BombedEffect1.h"
 
+#include "Math.h"
+
 namespace RTG
 {
 	EnemyVCPU::EnemyVCPU() : VM::VCPU()
@@ -41,7 +43,7 @@ namespace RTG
 	void EnemyVCPU::SysGetEnemySpeed()
 	{
 		Pop();
-		Push( m_pEnemyInfo->m_Speed );
+		Push( (int)m_pEnemyInfo->m_Speed );
 	}
 
 	void EnemyVCPU::SysGetEnemyCounter()
@@ -50,18 +52,24 @@ namespace RTG
 		Push( m_pEnemyInfo->m_Counter );
 	}
 
+	void EnemyVCPU::SysGetEnemyCounterF()
+	{
+		Pop();
+		Push( VM::Value( static_cast < float > ( m_pEnemyInfo->m_Counter ) ) );
+	}
+
 	void EnemyVCPU::SysGetEnemyAngle()
 	{
 		Pop();
-		Push( m_pEnemyInfo->m_Angle );
+		Push( (int)m_pEnemyInfo->m_Angle );
 	}
 
 	void EnemyVCPU::SysSetEnemyPos()
 	{
 		Pop();
-		int y = Top().m_Integer;
+		float y = Top().m_Float;
 		Pop();
-		int x = Top().m_Integer;
+		float x = Top().m_Float;
 		Pop();
 		m_pEnemyInfo->m_PosX = x;
 		m_pEnemyInfo->m_PosY = y;
@@ -104,18 +112,17 @@ namespace RTG
 		Pop();
 		int imgID = Top().m_Integer;
 		Pop();
-		int radius = Top().m_Integer;
+		float radius = Top().m_Float;
 		Pop();
-		int angle = Top().m_Integer;
+		float angle = Top().m_Float;
 		Pop();
-		int speed = Top().m_Integer;
+		float speed = Top().m_Float;
 		Pop();
-		int y = Top().m_Integer;
+		float y = Top().m_Float;
 		Pop();
-		int x = Top().m_Integer;
+		float x = Top().m_Float;
 		Pop();
-		double t = MAPIL::DegToRad( angle );
-		m_pEnemyInfo->m_pShotList->Add( new EnemyShot1( MAPIL::Vector2 < double > ( x, y ), speed, t, radius, imgID ) );
+		m_pEnemyInfo->m_pShotList->Add( new EnemyShot1( MAPIL::Vector2 < double > ( x, y ), speed, angle, radius, imgID ) );
 	}
 
 	void EnemyVCPU::SysGetPlayerPosX()
@@ -126,11 +133,11 @@ namespace RTG
 		TaskList < CirclePlayer >::Iterator itEnd( m_pEnemyInfo->m_pPlayerList );
 		itEnd.End();
 
-		int result = 0;
+		float result = 0.0f;
 
 		// プレイヤーの情報の更新
 		for( it.Begin(); it != itEnd; ++it ){
-			result = static_cast < int > ( ( *it ).GetPos().m_X );
+			result = ( *it ).GetPos().m_X;
 		}
 
 		Push( result );
@@ -144,14 +151,21 @@ namespace RTG
 		TaskList < CirclePlayer >::Iterator itEnd( m_pEnemyInfo->m_pPlayerList );
 		itEnd.End();
 
-		int result = 0;
+		float result = 0.0f;
 
 		// プレイヤーの情報の更新
 		for( it.Begin(); it != itEnd; ++itEnd ){
-			result = static_cast < int > ( ( *it ).GetPos().m_Y );
+			result = ( *it ).GetPos().m_Y;
 		}
 
 		Push( result );
+	}
+
+	void EnemyVCPU::SysGetRandF()
+	{
+		Pop();
+
+		Push( Rand() * 1.0f / RAND_MAXIMUM );
 	}
 
 	void EnemyVCPU::SysCreateEffect1()
@@ -160,9 +174,9 @@ namespace RTG
 
 		int id = Top().m_Integer;
 		Pop();
-		int y = Top().m_Integer;
+		float y = Top().m_Float;
 		Pop();
-		int x = Top().m_Integer;
+		float x = Top().m_Float;
 		Pop();
 
 		m_pEnemyInfo->m_pEffect2DList->Add( new BombedEffect1( MAPIL::Vector2 < float > ( x, y ), 0.1f, 0.2f, id ) );
@@ -171,6 +185,9 @@ namespace RTG
 	void EnemyVCPU::OpSysCall( int val )
 	{
 		switch( val ){
+			case VM::SYS_GET_RANDOM_F:
+				SysGetRandF();
+				break;
 			case VM::SYS_GET_PLAYER_POSX:
 				SysGetPlayerPosX();
 				break;
@@ -191,6 +208,9 @@ namespace RTG
 				break;
 			case VM::SYS_ENEMY_GET_COUNTER:
 				SysGetEnemyCounter();
+				break;
+			case VM::SYS_ENEMY_GET_COUNTER_F:
+				SysGetEnemyCounterF();
 				break;
 			case VM::SYS_ENEMY_SET_POS:
 				SysSetEnemyPos();

@@ -39,9 +39,9 @@
 #ifndef BISON_POSITION_HH
 # define BISON_POSITION_HH
 
-#include <iostream>
-#include <string>
-#include <algorithm>
+# include <iostream>
+# include <string>
+# include <algorithm>
 
 
 /* Line 38 of location.cc  */
@@ -161,7 +161,7 @@ namespace yy {
 
 /* Line 144 of location.cc  */
 #line 1 "[Bison:b4_percent_define_default]"
-  
+
 } // yy
 
 /* Line 144 of location.cc  */

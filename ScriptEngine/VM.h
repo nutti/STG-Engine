@@ -30,10 +30,23 @@ namespace VM
 
 		SYS_UPDATE,					// Force updating.
 
+		SYS_INT_TO_FLOAT,			// Convert int to float.
+		SYS_FLOAT_TO_INT,			// Convert float to int.
+
+		SYS_SIN,					// Call math library sin().
+		SYS_COS,					// Call math library cos().
 		SYS_ATAN2,					// Call math library atan2().
+
+		SYS_DEG_TO_RAD,				// Convert degree to radius.
 
 		SYS_GET_PLAYER_POSX,		// Get player position. ( X )
 		SYS_GET_PLAYER_POSY,		// Get player position. ( Y )
+		SYS_GET_RANDOM_F,			// Get random. (float)
+
+		SYS_PLAY_SE,		// Play SE.
+		SYS_STOP_SE,		// Stop SE.
+		SYS_PLAY_BGM,		// Play BGM.
+		SYS_STOP_BGM,		// Stop BGM.
 
 		// For enemy script.
 		SYS_ENEMY_GET_POSX,			// Get position. ( X )
@@ -41,6 +54,7 @@ namespace VM
 		SYS_ENEMY_GET_HP,			// Get HP.
 		SYS_ENEMY_GET_SPEED,		// Get speed.
 		SYS_ENEMY_GET_COUNTER,		// Get counter.
+		SYS_ENEMY_GET_COUNTER_F,	// Get counter. ( float )
 		SYS_ENEMY_GET_ANGLE,		// Get angle.
 		SYS_ENEMY_SET_POS,			// Set position.
 		SYS_ENEMY_SET_ANGLE,		// Set angle.
@@ -54,6 +68,7 @@ namespace VM
 		SYS_STAGE_ADD_ENEMY,		// Add enemy.
 		SYS_STAGE_ADD_ENEMY_INIPOS,	// Add enemy with initial position.
 		SYS_STAGE_GET_FRAME,		// Get frame count.
+		SYS_STAGE_SET_FRAME,		// Set frame count.
 	};
 
 	class Data
@@ -453,6 +468,7 @@ namespace VM
 		void OpTest( int val )
 		{
 			int value = Top().m_Integer;
+			Pop();
 			if( value == Top().m_Integer ){
 				Pop();
 				jmp( val );
@@ -501,28 +517,35 @@ namespace VM
 			m_HasUpdateReq = true;
 		}
 
+		void SysFloatToInt();
+		void SysIntToFloat();
+
+		void SysSin();
+		void SysCos();
 		void SysAtan2();
+		void SysDegToRad();
+
+		void SysPlaySE();
+		void SysStopSE();
+		void SysPlayBGM();
+		void SysStopBGM();
+
+		void OpFNeg();
+		void OpFEq();
+		void OpFNe();
+		void OpFGt();
+		void OpFGe();
+		void OpFLt();
+		void OpFLe();
+		void OpFSub();
+		void OpFAdd();
+		void OpFMul();
+		void OpFDiv();
 
 		
 
-		virtual void OpSysCall( int val )
-		{
-			Pop();
-			switch( val ){
-				case SYS_PRINT:
-					SysPrint();
-					break;
-				case SYS_TOSTR:
-					SysToStr();
-					break;
-				case SYS_UPDATE:
-					SysUpdate();
-					break;
-				case SYS_ATAN2:
-					SysAtan2();
-					break;
-			}
-		}
+		virtual void OpSysCall( int val );
+
 		void SysPrint()
 		{
 			std::cout << Text( Top() );
@@ -552,6 +575,11 @@ namespace VM
 			m_pCommandPtr = m_pCommand + addr ;
 		}
 		void Push( int v )
+		{
+			m_Stack.Push( VM::Value( v ) );
+		}
+		//void Push( float v );
+		void Push( float v )
 		{
 			m_Stack.Push( VM::Value( v ) );
 		}

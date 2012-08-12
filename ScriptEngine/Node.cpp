@@ -12,8 +12,12 @@ Node* Node::MakeNode( Compiler& compiler, const yy::location& location, int op, 
 	if( pRight == 0 ){
 		switch( op ){
 			case OP_NEG:
-				if( pLeft->m_OP == OP_CONST ){
+				if( pLeft->m_OP == OP_INT_CONST ){
 					pLeft->m_Value = - pLeft->m_Value;
+					return pLeft;
+				}
+				else if( pLeft->m_OP == OP_FLOAT_CONST ){
+					pLeft->m_FValue = -pLeft->m_FValue;
 					return pLeft;
 				}
 				break;
@@ -22,7 +26,7 @@ Node* Node::MakeNode( Compiler& compiler, const yy::location& location, int op, 
 	}
 
 	// Value - Value
-	if( pLeft->m_OP == OP_CONST && pRight->m_OP == OP_CONST ){
+	if( pLeft->m_OP == OP_INT_CONST && pRight->m_OP == OP_INT_CONST ){
 		switch( op ){
 			case OP_LOGAND:
 				pLeft->m_Value = ( pLeft->m_Value && pRight->m_Value ) ? 1 : 0;
@@ -92,6 +96,66 @@ Node* Node::MakeNode( Compiler& compiler, const yy::location& location, int op, 
 		return pLeft;
 	}
 
+	// FValue - FValue
+	if( pLeft->m_OP == OP_FLOAT_CONST && pRight->m_OP == OP_FLOAT_CONST ){
+		bool changeAble = false;
+		int value = 0;
+		switch( op ){
+			case OP_EQ:
+				value = ( pLeft->m_FValue == pRight->m_FValue ) ? 1 : 0;
+				changeAble = true;
+				break;
+			case OP_NE:
+				value = ( pLeft->m_FValue != pRight->m_FValue ) ? 1 : 0;
+				changeAble = true;
+				break;
+			case OP_GT:
+				value = ( pLeft->m_FValue > pRight->m_FValue ) ? 1 : 0;
+				changeAble = true;
+				break;
+			case OP_GE:
+				value = ( pLeft->m_FValue >= pRight->m_FValue ) ? 1: 0;
+				changeAble = true;
+				break;
+			case OP_LT:
+				value = ( pLeft->m_FValue < pRight->m_FValue ) ? 1: 0;
+				changeAble = true;
+				break;
+			case OP_LE:
+				value = ( pLeft->m_FValue <= pRight->m_FValue ) ? 1: 0;
+				changeAble = true;
+				break;
+			case OP_MINUS:
+				pLeft->m_FValue -= pRight->m_FValue;
+				break;
+			case OP_PLUS:
+				pLeft->m_FValue += pRight->m_FValue;
+				break;
+			case OP_TIMES:
+				pLeft->m_FValue *= pRight->m_FValue;
+				break;
+			case OP_DIVIDE:
+				if( pRight->m_FValue == 0.0f ){
+					compiler.error( location, "Error : 0 division." );
+				}
+				else{
+					pLeft->m_FValue /= pRight->m_FValue;
+				}
+				break;
+			default:
+				compiler.error( location, "Invalid operations" );
+				break;
+		}
+		delete pRight;
+		if( changeAble ){
+			delete pLeft;
+			return new Node( location, OP_INT_CONST, value );
+		}
+		else{
+			return pLeft;
+		}
+	}
+
 	// String - String
 	if( pLeft->m_OP == OP_STRING && pRight->m_OP == OP_STRING ){
 		if( op == OP_PLUS ){
@@ -138,7 +202,7 @@ Node* Node::MakeNode( Compiler& compiler, const yy::location& location, int op, 
 		}
 		delete pLeft;
 		delete pRight;
-		return new Node( location, OP_CONST, value );
+		return new Node( location, OP_INT_CONST, value );
 	}
 	return new Node( location, op, pLeft, pRight );
 }
@@ -146,15 +210,26 @@ Node* Node::MakeNode( Compiler& compiler, const yy::location& location, int op, 
 int Node::Push( Compiler* pCompiler ) const
 {
 	switch( m_OP ){
-		case OP_NEG:
-			if( m_pLeft->Push( pCompiler ) == TYPE_STRING ){
+		case OP_NEG:{
+			int ret = m_pLeft->Push( pCompiler );
+			if( ret == TYPE_STRING ){
 				pCompiler->error( m_Location, "'-' can not be used to string." );
 			}
-			pCompiler->OpNeg();
-			return TYPE_INTEGER;
-		case OP_CONST:
+			if( ret == TYPE_FLOAT ){
+				pCompiler->OpFNeg();
+				return TYPE_FLOAT;
+			}
+			else{
+				pCompiler->OpNeg();
+				return TYPE_INTEGER;
+			}
+		}
+		case OP_INT_CONST:
 			pCompiler->PushConst( m_Value );
 			return TYPE_INTEGER;
+		case OP_FLOAT_CONST:
+			pCompiler->PushConst( m_FValue );
+			return TYPE_FLOAT;
 		case OP_STRING:
 			pCompiler->PushString( *m_pString );
 			return TYPE_STRING;
@@ -228,6 +303,57 @@ int Node::Push( Compiler* pCompiler ) const
 		return TYPE_INTEGER;
 	}
 
+	// Float operation.
+	if( leftType == TYPE_FLOAT ){
+		int type;
+		switch( m_OP ){
+			case OP_EQ:
+				pCompiler->OpFEq();
+				type = TYPE_INTEGER;
+				break;
+			case OP_NE:
+				pCompiler->OpFNe();
+				type = TYPE_INTEGER;
+				break;
+			case OP_GT:
+				pCompiler->OpFGt();
+				type = TYPE_INTEGER;
+				break;
+			case OP_GE:
+				pCompiler->OpFGe();
+				type = TYPE_INTEGER;
+				break;
+			case OP_LT:
+				pCompiler->OpFLt();
+				type = TYPE_INTEGER;
+				break;
+			case OP_LE:
+				pCompiler->OpFLe();
+				type = TYPE_INTEGER;
+				break;
+			case OP_MINUS:
+				pCompiler->OpFSub();
+				type = TYPE_FLOAT;
+				break;
+			case OP_PLUS:
+				pCompiler->OpFAdd();
+				type = TYPE_FLOAT;
+				break;
+			case OP_TIMES:
+				pCompiler->OpFMul();
+				type = TYPE_FLOAT;
+				break;
+			case OP_DIVIDE:
+				pCompiler->OpFDiv();
+				type = TYPE_FLOAT;
+				break;
+			default:
+				pCompiler->error( m_Location, "Invalid operation." );
+				break;
+		}
+		return type;
+	}
+
 	// String operations.
 	switch( m_OP ){
 		case OP_EQ:
@@ -271,13 +397,12 @@ int ValueNode::Push( Compiler* pCompiler ) const
 	}
 	else{
 		const ValueTag* pTag = pCompiler->GetValueTag( *m_pString );
-		//std::cout << *m_pString << std::endl;
 		if( pTag == 0 ){
 			pCompiler->error( m_Location, "Variable : " + *m_pString + " is not decleared." );
 		}
 		else{
 			// Array or reference.
-			if( pTag->m_Type >= TYPE_INTEGER_REF ){
+			if( pTag->m_Type >= TYPE_INTEGER_REF && pTag->m_Type != TYPE_FLOAT ){
 				// Array.
 				if( m_pLeft ){
 					m_pLeft->Push( pCompiler );
@@ -326,7 +451,7 @@ int ValueNode::Pop( Compiler* pCompiler ) const
 			pCompiler->error( m_Location, "Variable : " + *m_pString + " is not decleared." );
 		}
 		else{
-			if( pTag->m_Type >= TYPE_INTEGER_REF ){
+			if( pTag->m_Type >= TYPE_INTEGER_REF && pTag->m_Type != TYPE_FLOAT ){
 				// Array or reference.
 				if( m_pLeft ){
 					m_pLeft->Push( pCompiler );
@@ -376,7 +501,7 @@ struct SetArg
 	void operator()( Node* pNode ) const
 	{
 		int type = m_pFunc->GetArg( m_Index++ );
-		if( type >= TYPE_INTEGER_REF ){
+		if( type >= TYPE_INTEGER_REF && type != TYPE_FLOAT ){
 			if( pNode->GetOP() != OP_VALUE ){
 				m_pCompiler->error( pNode->GetLocation(), "Value is not registered." );
 			}
@@ -386,7 +511,7 @@ struct SetArg
 					m_pCompiler->error( pNode->GetLocation(), "Variable : " + pNode->GetString() + " is not registered." );
 				}
 				// Reference
-				else if( pTag->m_Type >= TYPE_INTEGER_REF ){
+				else if( pTag->m_Type >= TYPE_INTEGER_REF && pTag->m_Type != TYPE_FLOAT ){
 					if( pNode->GetLeft() ){
 						pNode->GetLeft()->Push( m_pCompiler );
 						m_pCompiler->PushLocal( pTag->m_Addr );
@@ -407,7 +532,7 @@ struct SetArg
 					}
 					if( pNode->GetLeft() ){
 						// Expression
-						if( pNode->GetLeft()->GetOP() == OP_CONST ){
+						if( pNode->GetLeft()->GetOP() == OP_INT_CONST ){
 							m_pCompiler->PushAddr( addr + pNode->GetLeft()->GetValue() );
 						}
 						// Array
@@ -495,7 +620,9 @@ void Assign::Analyze( Compiler* pCompiler )
 		m_pValue->Push( pCompiler );
 	}
 
-	if( m_pExpr->Push( pCompiler ) == TYPE_INTEGER ){
+	int ret = m_pExpr->Push( pCompiler );
+
+	if( ret == TYPE_INTEGER ){
 		switch( m_OP ){
 			case '+':
 				pCompiler->OpAdd();
@@ -513,7 +640,30 @@ void Assign::Analyze( Compiler* pCompiler )
 				pCompiler->OpMod();
 				break;
 		}
-		if( m_pValue->Pop( pCompiler ) != TYPE_INTEGER ){
+		if( m_pValue->Pop( pCompiler ) == TYPE_STRING ){
+			pCompiler->error( m_Location, "Assign the string to integer." );
+		}
+		return;
+	}
+	if( ret == TYPE_FLOAT ){
+		switch( m_OP ){
+			case '+':
+				pCompiler->OpFAdd();
+				break;
+			case '-':
+				pCompiler->OpFSub();
+				break;
+			case '*':
+				pCompiler->OpFMul();
+				break;
+			case '/':
+				pCompiler->OpFDiv();
+				break;
+			case '%':
+				pCompiler->error( m_Location, "Operation is invalid" );
+				break;
+		}
+		if( m_pValue->Pop( pCompiler ) == TYPE_STRING ){
 			pCompiler->error( m_Location, "Assign the string to integer." );
 		}
 		return;
@@ -663,10 +813,14 @@ void SwitchStatement::Analyze( Compiler* pCompiler )
 {
 	m_pExpr->Push( pCompiler );
 
+	printf( "\n\nkiojds" );
+
 	if( m_pStateList ){
 		int label = pCompiler->MakeLabel();
 		int breakLabel = pCompiler->SetBreakLabel( label );
 		int defaultLabel = label;
+
+		printf( "\n\niojofei" );
 
 		CaseActionParam param( pCompiler, defaultLabel );
 
@@ -692,7 +846,7 @@ void CaseStatement::AnalyzeCase( CaseActionParam* pParam )
 {
 	Compiler* pCompiler = pParam->m_pCompiler;
 	m_Label = pCompiler->MakeLabel();
-	if( m_pExpr->GetOP() != OP_CONST ){
+	if( m_pExpr->GetOP() != OP_INT_CONST ){
 		pCompiler->error( m_Location, "Invalid case parameter." );
 	}
 	m_pExpr->Push( pCompiler );

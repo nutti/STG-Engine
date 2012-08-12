@@ -7,6 +7,7 @@
 #include "NormalPlayer.h"
 #include "Effect2D.h"
 
+
 namespace RTG
 {
 	// スクリプトエンジンに渡す敵情報
@@ -22,6 +23,7 @@ namespace RTG
 		float							m_PosX;
 		float							m_PosY;
 		unsigned int					m_ImgID;
+		RandomSeed*						m_pRandSeed;
 	};
 
 	// スクリプトエンジンに渡すステージ情報
@@ -34,6 +36,7 @@ namespace RTG
 		TaskList < CirclePlayer >*		m_pPlayerList;
 		TaskList < Effect2D >*			m_pEffect2DList;
 		int*							m_pFrame;
+		RandomSeed*						m_pRandSeed;
 	};
 
 }

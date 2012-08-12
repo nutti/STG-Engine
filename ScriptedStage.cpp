@@ -31,7 +31,8 @@ namespace RTG
 																			m_Effect2DList(),
 																			m_StageNo( stage ),
 																			m_KillTotal( 0 ),
-																			m_ReflectTotal( 0 )
+																			m_ReflectTotal( 0 ),
+																			m_HitTotal( 0 )
 	{
 	}
 
@@ -50,6 +51,7 @@ namespace RTG
 		m_Paused = false;
 		m_KillTotal = 0;
 		m_ReflectTotal = 0;
+		m_HitTotal = 0;
 
 		DeleteTaskList( &m_PlayerList );
 		DeleteTaskList( &m_EnemyList );
@@ -59,7 +61,7 @@ namespace RTG
 
 		MAPIL::DeleteStaticBuffer( m_BombbedSE );
 		MAPIL::DeleteStaticBuffer( m_ReflectSE );
-		MAPIL::DeleteStreamingBuffer( m_StageBGM );
+		//MAPIL::DeleteStreamingBuffer( m_StageBGM );
 	}
 
 	void ScriptedStage::Update()
@@ -106,6 +108,15 @@ namespace RTG
 			if( !( *it ).Update() ){
 				it.Remove();
 				m_GameOvered = true;	// ゲームオーバー
+			}
+			else{
+				ResourceHandler* p = ResourceHandler::GetInst();
+				p->m_RdmSeed.m_PosX = ( *it ).GetPos().m_X;
+				p->m_RdmSeed.m_PosY = ( *it ).GetPos().m_Y;
+				p->m_RdmSeed.m_Score = p->m_pScore->Get();
+				p->m_RdmSeed.m_HitTotal = m_HitTotal;
+				p->m_RdmSeed.m_ReflectTotal = m_ReflectTotal;
+				p->m_RdmSeed.m_Frame = m_Frame;
 			}
 		}
 	}
@@ -257,6 +268,7 @@ namespace RTG
 		m_StageInfo.m_pFrame = &m_Frame;
 		m_StageInfo.m_pPlayerList = &m_PlayerList;
 		m_StageInfo.m_pEffect2DList = &m_Effect2DList;
+		m_StageInfo.m_pRandSeed = &p->m_RdmSeed;
 		// スクリプトコマンドの取得
 		m_pScriptCmd = m_pCompiler->GetStageScript();
 		// 仮想マシンのセットアップ
@@ -278,12 +290,12 @@ namespace RTG
 		// リソースの読み込み
 		m_ReflectSE = MAPIL::CreateStaticBuffer( "Resource/rtg_se1.wav" );
 		m_BombbedSE = MAPIL::CreateStaticBuffer( "Resource/rtg_se2.wav" );
-		m_StageBGM = MAPIL::CreateStreamingBuffer( "Resource/rtg_stage2.wav" );
+		//m_StageBGM = MAPIL::CreateStreamingBuffer( "Resource/rtg_stage2.wav" );
 
 		// ランダムシードの初期化
 		ResetRandSeed();
 
-		MAPIL::PlayStreamingBuffer( m_StageBGM );
+		//MAPIL::PlayStreamingBuffer( m_StageBGM );
 	}
 
 	bool ScriptedStage::IsLoading() const

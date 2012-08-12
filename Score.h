@@ -14,6 +14,7 @@ namespace RTG
 		int						m_RestScore;
 	public:
 		Score( MAPIL::ITexture texture, MAPIL::ISprite sprite );
+		Score();
 		~Score();
 		void Display( float x, float y, float offset, int digit ) const;
 		void Add( int score );

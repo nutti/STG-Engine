@@ -31,7 +31,8 @@ namespace RTG
 						TaskList < Effect2D >* pEffectList,
 						int x,
 						int y,
-						TaskList < CirclePlayer >* pPlayerList );
+						TaskList < CirclePlayer >* pPlayerList,
+						StageInfo* pInfo );
 		~ScriptedEnemy();
 		void Draw();
 		bool Move();

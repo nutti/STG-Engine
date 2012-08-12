@@ -14,7 +14,9 @@ namespace RTG
 		void SysAddEnemy();
 		void SysAddEnemyIniPos();
 		void SysGetFrame();
+		void SysSetFrame();
 		void SysUpdate();
+		void SysGetRand();
 	public:
 		StageVCPU();
 		~StageVCPU();
