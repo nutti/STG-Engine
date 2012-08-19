@@ -30,7 +30,7 @@ namespace RTG
 		virtual void Draw() = 0;
 		virtual bool Move() = 0;
 		virtual void Damage( int dec );
-		int GetHP() const;
+		virtual int GetHP() const;
 		int GetScore() const;
 		bool IsBoss() const;
 	};

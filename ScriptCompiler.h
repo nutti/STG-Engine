@@ -100,18 +100,30 @@ namespace RTG
 		void CompileEnemyShotScript( int id, const char* pFileName );	// 敵弾のスクリプトのコンパイル
 		void CompileEnemyScript( int id, const char* pFileName );		// 敵のスクリプトのコンパイル
 		void CompileStageScript( const char* pFileName );				// ステージのスクリプトのコンパイル
-		void CompileResourceScript( const char* pFileName );			// リソーススクリプトのコンパイル
-		void Cleanup();													// 現在のステージ構成スクリプトを削除
+		void LoadStageScript( const char* pFileName );						// ステージスクリプトのロード
+		void LoadStageScript( int archiveHandle, const char* pFilePath );		// ステージスクリプトのロード（アーカイブから）
+		void LoadEnemyScript( int i, const char* pFileName );					// 敵のスクリプトのロード
+		void LoadEnemyScript( int archiveHandle, int i, const char* pFilePath );	// 敵のスクリプトのロード（アーカイブから）
+		void LoadEnemyShotScript( int i, const char* pFileName );				// 敵弾のスクリプトのロード
+		void LoadEnemyShotScript( int archiveHandle, int i, const char* pFilePath );	// 敵弾のスクリプトのロード（アーカイブから）
+		void LoadScript( const char* pFileName, VM::Data* pVMData );			// スクリプトのロード
+		void LoadScript( int archiveHandle, const char* pFileName, VM::Data* pVMData );	// スクリプトのロード（アーカイブから）
+		void CompileResourceScript( const char* pFileName );					// リソーススクリプトのコンパイル
+		void LoadResourceScript( int archiveHandle, const char* pFilePath );	// リソーススクリプトのロード（アーカイブから）
+		void Cleanup();															// 現在のステージ構成スクリプトを削除
 	public:
 		ScriptCompiler();
 		~ScriptCompiler();
-		void BuildFileStructure( const char* pFileName );		// スクリプトファイルの構成を作成
-		void Compile( int stage );								// ステージを指定してコンパイル
-		ResourceScriptData GetResourceScriptData();				// リソーススクリプトデータを取得する
-		VM::Data* GetStageScript();									// ステージスクリプトを取得
-		VM::Data* GetEnemyScript( int index );						// 敵のスクリプトを取得
-		VM::Data* GetEnemyShotScript( int index );					// 敵弾のスクリプトを取得
-		bool Loaded() const;									// 読み込みが完了したか
+		void BuildFileStructure( const char* pFileName );						// スクリプトファイルの構成を作成
+		void BuildFileStructure( int archiveHandle, const char* pFileName );	// スクリプトファイルの構成を作成（アーカイブファイルから）
+		void Load( int stage );													// コンパイル済みのスクリプトデータの読み込み
+		void Load( int archiveHandle, int stage );								// コンパイル済みのスクリプトデータの読み込み（アーカイブファイルから）
+		void Compile( int stage );												// ステージを指定してコンパイル
+		ResourceScriptData GetResourceScriptData();								// リソーススクリプトデータを取得する
+		VM::Data* GetStageScript();												// ステージスクリプトを取得
+		VM::Data* GetEnemyScript( int index );									// 敵のスクリプトを取得
+		VM::Data* GetEnemyShotScript( int index );								// 敵弾のスクリプトを取得
+		bool Loaded() const;													// 読み込みが完了したか
 	};
 }
 

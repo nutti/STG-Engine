@@ -7,10 +7,8 @@ namespace RTG
 {
 	class MAPILString
 	{
-		MAPIL::ITexture			m_Texture;		// Texture for displaying the string.
-		MAPIL::ISprite			m_Sprite;		// Sprite for displaying the string.
+		int			m_Textures[ 16 ];
 	public:
-		MAPILString( MAPIL::ITexture texture, MAPIL::ISprite sprite );
 		MAPILString();
 		~MAPILString();
 		void Display( char c, float x, float y ) const;

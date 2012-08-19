@@ -44,6 +44,7 @@ namespace RTG
 
 		// 初期化
 		MAPIL::InitMAPIL( "Confetti", 640, 480 );
+		MAPIL::SetIcon( "confetti.ico" );
 
 		// セーブデータ管理クラスの初期化
 		p->m_pSaveDataManager = new SaveDataManager( "save/RTG.dat" );
@@ -66,12 +67,18 @@ namespace RTG
 
 		// コンパイラの初期化
 		p->m_pCompiler = new ScriptCompiler;
-		p->m_pCompiler->BuildFileStructure( "script/test.isc" );
-
+		//p->m_pCompiler->BuildFileStructure( "script/test.isc" );
+		p->m_pCompiler->BuildFileStructure( p->m_Archiver, "archive/script/test.isc" );
 
 		// メニュー画面へ遷移
 		m_pScene = new Menu();
 		m_pScene->Init();
+
+		// スコアの作成
+		p->m_pScore = new Score();
+
+		// ボスのHPバーの画像をロード
+		p->m_BossHPBar = MAPIL::CreateTexture( p->m_Archiver, "archive/resource/texture/BossHPBar.png" );
 	}
 
 	void MainFrame::ShowLoading()
@@ -114,7 +121,7 @@ namespace RTG
 				// 描画設定
 				MAPIL::BeginRendering();
 				MAPIL::EnableBlending();
-				MAPIL::EnableLighting();
+				MAPIL::DisableLighting();
 				MAPIL::EnableZBuffering();
 				MAPIL::SetTextureMode( MAPIL::TEXTURE_MODE_2D );
 				MAPIL::SetCullingMode( MAPIL::CULL_MODE_DISABLED );

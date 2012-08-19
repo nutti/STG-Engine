@@ -37,7 +37,7 @@ namespace RTG
 		// 2D•`‰æŠJŽn
 		MAPIL::BeginRendering2DGraphics();
 
-		for( int i = 0; i < 32; ++i ){
+		for( int i = 0; i < 25; ++i ){
 			char strBase[ 160 ];
 			ScoreEntry se = p->m_pSaveDataManager->GetScoreEntry( i );
 			if( se.m_Used ){

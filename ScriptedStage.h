@@ -12,14 +12,15 @@
 
 #include "StageVCPU.h"
 #include "ScriptType.h"
+#include "Loading.h"
 
 namespace RTG
 {
-	//enum PlayMode
-	//{
-	//	PLAY_MODE_REPLAY = 0,
-	//	PLAY_MODE_NORMAL = 1,
-	//};
+	enum PlayMode
+	{
+		PLAY_MODE_REPLAY = 0,
+		PLAY_MODE_NORMAL = 1,
+	};
 
 	class ScriptCompiler;
 	class ScriptedStage : public Scene
@@ -32,11 +33,13 @@ namespace RTG
 		StageInfo			m_StageInfo;		// ステージ情報
 
 		// ステージの状態
-		int					m_Frame;		// フレーム数
-		bool				m_Cleared;		// ステージクリアフラグ
-		bool				m_GameOvered;	// ゲームオーバフラグ
-		bool				m_Paused;		// ポーズフラグ
-		int					m_StageNo;		// ステージ番号
+		int					m_PlayMode;			// プレイモード
+		int					m_Frame;			// フレーム数
+		bool				m_Cleared;			// ステージクリアフラグ
+		bool				m_GameOvered;		// ゲームオーバフラグ
+		bool				m_Paused;			// ポーズフラグ
+		int					m_StageNo;			// ステージ番号
+		int					m_FinishedCounter;	// 終了時のカウンタ
 
 		// 各種オブジェクトリスト
 		typedef TaskList < CirclePlayer >			CirclePlayerList;
@@ -58,9 +61,15 @@ namespace RTG
 		int							m_BombbedSE;
 		int							m_StageBGM;
 
+		int							m_BGTexture[ 2 ];
+
 		int							m_ReflectTotal;
 		int							m_KillTotal;
 		int							m_HitTotal;
+
+		MAPIL::Vector3 < float >	m_Pos;
+
+		Loading						m_Loading;
 
 		
 		// 非公開メソッド群
@@ -72,7 +81,7 @@ namespace RTG
 		void CollidePlayerAndEnemy();			// プレイヤーと敵との衝突判定
 		void CollideEnemyAndReflectedShot();	// 敵と反射弾との衝突判定
 	public:
-		ScriptedStage( ScriptCompiler* pCompiler, int stage );
+		ScriptedStage( ScriptCompiler* pCompiler, int stage, int playMode );
 		~ScriptedStage();
 		void Update();				// データ更新
 		void Draw();				// 描画

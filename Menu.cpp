@@ -43,13 +43,13 @@ namespace RTG
 
 		MAPIL::RefleshResources();
 
-		m_Texture[ 0 ] = MAPIL::CreateTexture( "Resource/MenuEffect2.png" );
+		m_Texture[ 0 ] = MAPIL::CreateTexture( p->m_Archiver, "archive/resource/texture/MenuEffect2.png" );
 
-		m_BGM = MAPIL::CreateStreamingBuffer( "Resource/rtg_title.wav" );
+		m_BGM = MAPIL::CreateStreamingBuffer( p->m_Archiver, "archive/resource/bgm/rtg_title.wav" );
 
-		m_SelectSE = MAPIL::CreateStaticBuffer( "Resource/select.wav" );
+		m_SelectSE = MAPIL::CreateStaticBuffer( p->m_Archiver, "archive/resource/se/select.wav" );
 
-		m_MoveSE = MAPIL::CreateStaticBuffer( "Resource/move.wav" );
+		m_MoveSE = MAPIL::CreateStaticBuffer( p->m_Archiver, "archive/resource/se/move.wav" );
 
 		m_PointSprite = MAPIL::CreatePointSprite( 200, m_Texture[ 0 ] );
 
@@ -95,7 +95,7 @@ namespace RTG
 
 		// For testing.
 		if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_ENTER ) ){
-			SetNextScene( new ScriptedStage( p->m_pCompiler, 1 ) );
+			SetNextScene( new ScriptedStage( p->m_pCompiler, 1, PLAY_MODE_NORMAL ) );
 			return;
 		}
 		
@@ -115,7 +115,7 @@ namespace RTG
 		}
 		else if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_BARRIER ) ){
 			if( m_SelectedMenuItem == MENU_ITEM_PLAY_GAME ){
-				SetNextScene( new ScriptedStage( p->m_pCompiler, 1 ) );
+				SetNextScene( new ScriptedStage( p->m_pCompiler, 1, PLAY_MODE_NORMAL ) );
 				MAPIL::PlayStaticBuffer( m_SelectSE );
 			}
 			else if( m_SelectedMenuItem == MENU_ITEM_REPLAY ){

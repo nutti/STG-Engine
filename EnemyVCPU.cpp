@@ -107,6 +107,30 @@ namespace RTG
 		m_pEnemyInfo->m_ImgID = id;
 	}
 
+	void EnemyVCPU::SysSetEnemyCollisionRadius()
+	{
+		Pop();
+		float radius = Top().m_Float;
+		Pop();
+		m_pEnemyInfo->m_ColRadius = radius;
+	}
+
+	void EnemyVCPU::SysSetEnemyScore()
+	{
+		Pop();
+		int score = Top().m_Integer;
+		Pop();
+		m_pEnemyInfo->m_Score = score;
+	}
+
+	void EnemyVCPU::SysSetEnemyBossFlag()
+	{
+		Pop();
+		int flag = Top().m_Integer;
+		Pop();
+		m_pEnemyInfo->m_IsBoss = flag;
+	}
+
 	void EnemyVCPU::SysCreateEnemyShot1()
 	{
 		Pop();
@@ -229,6 +253,15 @@ namespace RTG
 				break;
 			case VM::SYS_ENEMY_SET_IMAGE:
 				SysSetEnemyImgID();
+				break;
+			case VM::SYS_ENEMY_SET_COLLISION_RADIUS:
+				SysSetEnemyCollisionRadius();
+				break;
+			case VM::SYS_ENEMY_SET_SCORE:
+				SysSetEnemyScore();
+				break;
+			case VM::SYS_ENEMY_SET_BOSS_FLAG:
+				SysSetEnemyBossFlag();
 				break;
 			case VM::SYS_ENEMY_CREATE_EFFECT_1:
 				SysCreateEffect1();

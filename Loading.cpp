@@ -1,28 +1,24 @@
 #include "Loading.h"
 #include <MAPIL/IO/Archiver.h>
 
+#include "ResourceHandler.h"
+
 
 namespace RTG
 {
 	Loading::Loading() :	MAPIL::WinAPIThread(),
-							m_StreamingList(),
-							m_StaticBufferList(),
-							m_LoadingState( LOADING_STATE_IDLE )
+							m_LoadingState( LOADING_STATE_IDLE ),
+							m_Scene( -1 ),
+							m_ppScriptCmd( NULL ),
+							m_pStageVCPU( NULL ),
+							m_pStageInfo( NULL )
 	{
-		m_StreamingList.clear();
-		m_StaticBufferList.clear();
 	}
 
 	Loading::~Loading()
 	{
 		m_LoadingState = LOADING_STATE_TERM;
-		m_StreamingList.clear();
-		m_StaticBufferList.clear();
-	}
-
-	void Loading::SetArchiver( const TCHAR* pFileName )
-	{
-		m_ArchiveFileName = pFileName;
+		m_Scene = -1;
 	}
 
 	void Loading::Create()
@@ -44,28 +40,6 @@ namespace RTG
 	void Loading::Reset()
 	{
 		m_LoadingState = LOADING_STATE_IDLE;
-		m_StreamingList.clear();
-		m_StaticBufferList.clear();
-	}
-
-	void Loading::SetContents( MAPIL::IStreamingBuffer c, const TCHAR* pFileName )
-	{
-		IStreamingPair pair;
-
-		pair.m_Streaming = c;
-		pair.m_FileName = pFileName;
-
-		m_StreamingList.push_back( pair );
-	}
-
-	void Loading::SetContents( MAPIL::IStaticBuffer c, const TCHAR* pFileName )
-	{
-		IStaticBufferPair pair;
-
-		pair.m_StaticBuffer = c;
-		pair.m_FileName = pFileName;
-
-		m_StaticBufferList.push_back( pair );
 	}
 
 	bool Loading::IsFinished() const
@@ -82,8 +56,12 @@ namespace RTG
 				Sleep( 1 );
 			}
 			else if( m_LoadingState == LOADING_STATE_LOAD ){
-				LoadStreamingBuffer();
-				LoadStaticBuffer();
+				ResourceHandler* p = ResourceHandler::GetInst();
+				//p->m_pCompiler->Compile( m_Scene );
+				p->m_pCompiler->Load( p->m_Archiver, m_Scene );
+				p->SetupHandle();
+				*m_ppScriptCmd = p->m_pCompiler->GetStageScript();
+				m_pStageVCPU->Init( *m_ppScriptCmd, m_pStageInfo );
 				m_LoadingState = LOADING_STATE_COMP;
 			}
 		}
@@ -91,27 +69,11 @@ namespace RTG
 		return 0;
 	}
 
-	void Loading::LoadStreamingBuffer()
+	void Loading::SetScene( int scene, StageVCPU* pStageVCPU, VM::Data** ppScriptCmd, StageInfo* pStageInfo )
 	{
-		std::list < IStreamingPair > ::iterator it = m_StreamingList.begin();
-		for( ; it != m_StreamingList.end(); ++it ){
-			( *it ).m_Streaming->Create( m_ArchiveFileName.c_str(), ( *it ).m_FileName.c_str() );
-		}
-	}
-
-	void Loading::LoadStaticBuffer()
-	{
-		MAPIL::Archiver* p = new MAPIL::Archiver();
-		char name[ 1024 ];
-		MAPIL::ConvertToMultiByte( m_ArchiveFileName.c_str(), -1, name, 1024 );
-
-		p->Open( name, MAPIL::FILE_OPEN_READ_MODE );
-
-		std::list < IStaticBufferPair > ::iterator it = m_StaticBufferList.begin();
-		for( ; it != m_StaticBufferList.end(); ++it ){
-			( *it ).m_StaticBuffer->Create( p, ( *it ).m_FileName.c_str() );
-		}
-
-		MAPIL::SafeDelete( p );
+		m_Scene = scene;
+		m_pStageVCPU = pStageVCPU;
+		m_ppScriptCmd = ppScriptCmd;
+		m_pStageInfo = pStageInfo;
 	}
 }

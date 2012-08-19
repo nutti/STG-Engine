@@ -24,6 +24,9 @@ namespace RTG
 		float							m_PosY;
 		unsigned int					m_ImgID;
 		RandomSeed*						m_pRandSeed;
+		float							m_ColRadius;
+		int								m_Score;
+		int								m_IsBoss;
 	};
 
 	// スクリプトエンジンに渡すステージ情報

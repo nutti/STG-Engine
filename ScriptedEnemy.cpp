@@ -53,12 +53,17 @@ namespace RTG
 		ResourceHandler* p = ResourceHandler::GetInst();
 
 		MAPIL::DrawTexture( p->GetTextureHandle( m_EnemyInfo.m_ImgID ), m_EnemyInfo.m_PosX, m_EnemyInfo.m_PosY, 0.0f );
+
+		if( m_EnemyInfo.m_IsBoss ){
+			MAPIL::DrawTextureNonCentering( p->m_BossHPBar, 12.0f, 50.0f, m_EnemyInfo.m_HP / 26.0f, 0.2f, 0.0f );
+		}
 	}
 
 	bool ScriptedEnemy::Move()
 	{
 		m_Pos.m_X = m_EnemyInfo.m_PosX;
 		m_Pos.m_Y = m_EnemyInfo.m_PosY;
+		
 
 		// スクリプトコマンドの実行
 		// スクリプトが終了していないかチェック
@@ -68,6 +73,14 @@ namespace RTG
 		m_VirtualMachine.Run();
 
 		++m_EnemyInfo.m_Counter;
+
+		m_Score = m_EnemyInfo.m_Score;
+		m_Radius = m_EnemyInfo.m_ColRadius;
+		m_IsBoss = m_EnemyInfo.m_IsBoss;
+
+		if( m_EnemyInfo.m_HP <= 0 ){
+			return false;
+		}
 
 		return true;
 	}
@@ -97,5 +110,10 @@ namespace RTG
 	void ScriptedEnemy::Damage( int dec )
 	{
 		m_EnemyInfo.m_HP -= dec;
+	}
+
+	int ScriptedEnemy::GetHP() const
+	{
+		return m_EnemyInfo.m_HP;
 	}
 }

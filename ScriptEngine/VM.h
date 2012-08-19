@@ -42,6 +42,7 @@ namespace VM
 		SYS_GET_PLAYER_POSX,		// Get player position. ( X )
 		SYS_GET_PLAYER_POSY,		// Get player position. ( Y )
 		SYS_GET_RANDOM_F,			// Get random. (float)
+		SYS_ADD_SCORE,				// Add score.
 
 		SYS_PLAY_SE,		// Play SE.
 		SYS_STOP_SE,		// Stop SE.
@@ -61,6 +62,9 @@ namespace VM
 		SYS_ENEMY_SET_SPEED,		// Set speed.
 		SYS_ENEMY_SET_HP,			// Set HP.
 		SYS_ENEMY_SET_IMAGE,		// Set image.
+		SYS_ENEMY_SET_COLLISION_RADIUS,		// Set collision radius.
+		SYS_ENEMY_SET_SCORE,				// Set score.
+		SYS_ENEMY_SET_BOSS_FLAG,			// Set boss flag.
 		SYS_ENEMY_CREATE_SHOT_1,	// Create enemy shot. (Linear)
 		SYS_ENEMY_CREATE_EFFECT_1,	// Create effect. (Bombbed Effect.)
 
@@ -519,6 +523,7 @@ namespace VM
 
 		void SysFloatToInt();
 		void SysIntToFloat();
+		void SysAddScore();
 
 		void SysSin();
 		void SysCos();

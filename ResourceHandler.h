@@ -9,6 +9,7 @@
 #include "ScriptCompiler.h"
 
 
+
 namespace RTG
 {
 	struct RandomSeed
@@ -61,6 +62,10 @@ namespace RTG
 
 		RandomSeed							m_RdmSeed;
 
+		int									m_BossHPBar;
+
+		int									m_Archiver;
+
 		ResourceHandler();
 		~ResourceHandler();
 	
@@ -72,6 +77,7 @@ namespace RTG
 		int GetTextureHandle( int index );
 		int GetBGMHandle( int index );
 		int GetSEHandle( int index );
+		void ReleaseAllStageResources();			// リソースマップに保存されているリソースを全て開放
 	};
 }
 

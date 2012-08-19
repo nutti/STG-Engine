@@ -38,7 +38,7 @@ namespace RTG
 			rl.Load( fileName );
 			rl.GetReplayData( p->m_pReplayEntry );
 			p->m_pGBManager->SetReplay( 1 );
-			SetNextScene( new ScriptedStage( p->m_pCompiler, 1 ) );
+			SetNextScene( new ScriptedStage( p->m_pCompiler, 1, PLAY_MODE_REPLAY ) );
 		}
 		else if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_DOWN ) ){
 			++m_FileNo;

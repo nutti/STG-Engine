@@ -21,6 +21,8 @@ namespace RTG
 		m_ReflectAngle = 0.0;
 		MAPIL::DeleteTexture( m_HPBarTexture );
 		MAPIL::DeleteTexture( m_EnergyBarTexture );
+		MAPIL::DeleteTexture( m_PlayerTexture );
+		MAPIL::DeleteTexture( m_ReflectModeEffectTexture );
 	}
 
 	void NormalPlayer::Draw()
@@ -160,9 +162,11 @@ namespace RTG
 
 	void NormalPlayer::Init()
 	{
-		m_EnergyBarTexture = MAPIL::CreateTexture( "Resource/EnergyBar.png" );
-		m_HPBarTexture = MAPIL::CreateTexture( "Resource/HPBar.png" );
-		m_ReflectModeEffectTexture = MAPIL::CreateTexture( "Resource/ReflectModeEffect.png" );
-		m_PlayerTexture = MAPIL::CreateTexture( "Resource/NormalPlayer.png" );
+		ResourceHandler* p = ResourceHandler::GetInst();
+
+		m_EnergyBarTexture = MAPIL::CreateTexture( p->m_Archiver, "archive/resource/texture/EnergyBar.png" );
+		m_HPBarTexture = MAPIL::CreateTexture( p->m_Archiver, "archive/resource/texture/HPBar.png" );
+		m_ReflectModeEffectTexture = MAPIL::CreateTexture( p->m_Archiver, "archive/resource/texture/ReflectModeEffect.png" );
+		m_PlayerTexture = MAPIL::CreateTexture( p->m_Archiver, "archive/resource/texture/NormalPlayer.png" );
 	}
 }

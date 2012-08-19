@@ -4,6 +4,8 @@
 #include "Defines.h"
 #include <list>
 
+#include "StageVCPU.h"
+
 namespace RTG
 {
 	enum LoadingState
@@ -15,39 +17,24 @@ namespace RTG
 		LOADING_STATE_TERM	= 4,
 	};
 
-	struct IStreamingPair
-	{
-		MAPIL::IStreamingBuffer		m_Streaming;
-		std::basic_string < TCHAR >	m_FileName;
-	};
-
-	struct IStaticBufferPair
-	{
-		MAPIL::IStaticBuffer		m_StaticBuffer;
-		std::basic_string < TCHAR >	m_FileName;
-	};
-
 	class Loading : public MAPIL::WinAPIThread
 	{
 	private:
-		std::basic_string < TCHAR >		m_ArchiveFileName;
-		std::list < IStreamingPair >	m_StreamingList;
-		std::list < IStaticBufferPair >	m_StaticBufferList;
-		LoadingState					m_LoadingState;
-
-		void LoadStreamingBuffer();
-		void LoadStaticBuffer();
+		LoadingState	m_LoadingState;
+		int				m_Scene;
+		StageVCPU*		m_pStageVCPU;
+		VM::Data**		m_ppScriptCmd;
+		StageInfo*		m_pStageInfo;
 	public:
 		Loading();
 		~Loading();
 		void Create();
-		void SetArchiver( const TCHAR* pFileName );
+		void SetScriptData( const char* pFileName );
 		void Start();
 		void Stop();
 		void Reset();
-		void SetContents( MAPIL::IStreamingBuffer c, const TCHAR* pFileName );
-		void SetContents( MAPIL::IStaticBuffer c, const TCHAR* pFileName );
 		bool IsFinished() const;
+		void SetScene( int scene, StageVCPU* pStageVCPU, VM::Data** ppScriptCmd, StageInfo* pStageInfo );
 		int ThreadFunc();
 	};
 }

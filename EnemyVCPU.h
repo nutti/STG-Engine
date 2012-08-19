@@ -31,6 +31,9 @@ namespace RTG
 		void SysSetEnemySpeed();
 		void SysSetEnemyHP();
 		void SysSetEnemyImgID();
+		void SysSetEnemyCollisionRadius();
+		void SysSetEnemyScore();
+		void SysSetEnemyBossFlag();
 		void SysCreateEnemyShot1();
 		void SysCreateEffect1();
 	public:

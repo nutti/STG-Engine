@@ -78,6 +78,9 @@ void VM::VCPU::OpSysCall( int val )
 		case SYS_FLOAT_TO_INT:
 			SysFloatToInt();
 			break;
+		case SYS_ADD_SCORE:
+			SysAddScore();
+			break;
 		case SYS_SIN:
 			SysSin();
 			break;
@@ -117,6 +120,14 @@ void VM::VCPU::SysIntToFloat()
 	int i = Top().m_Integer;
 	Pop();
 	Push( static_cast < float > ( i ) );
+}
+
+void VM::VCPU::SysAddScore()
+{
+	float score = Top().m_Integer;
+	Pop();
+	RTG::ResourceHandler* p = RTG::ResourceHandler::GetInst();
+	p->m_pScore->Add( score );
 }
 
 void VM::VCPU::SysSin()

@@ -2,11 +2,6 @@
 
 namespace RTG
 {
-	Score::Score( MAPIL::ITexture texture, MAPIL::ISprite sprite ) :	m_MAPILString( texture, sprite ),
-																		m_Score( 0 ),
-																		m_RestScore( 0 )
-	{
-	}
 
 	Score::Score() :	m_MAPILString(),
 						m_Score( 0 ),

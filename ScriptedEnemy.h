@@ -37,6 +37,7 @@ namespace RTG
 		void Draw();
 		bool Move();
 		void Damage( int dec );
+		int GetHP() const;
 		void Init();
 		MAPIL::Vector2 < double > GetPos() const;
 	};
