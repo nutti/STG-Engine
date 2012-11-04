@@ -23,7 +23,7 @@ namespace RTG
 	public:
 		ReplayLoader();
 		~ReplayLoader();
-		void Load( const char* pFileName );					// ロード（リプレイデータを読み込む）
+		int Load( const char* pFileName );					// ロード（リプレイデータを読み込む）
 		void Open( const char* pFileName );					// ロード（リプレイデータは読み込まない）
 		const char* GetName() const;						// 名前の取得
 		int GetScore() const;								// スコアの取得

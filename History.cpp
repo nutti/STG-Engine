@@ -3,6 +3,7 @@
 #include "History.h"
 #include "Menu.h"
 #include "GeneralButtonManager.h"
+#include "FontString.h"
 
 #include <time.h>
 
@@ -37,22 +38,38 @@ namespace RTG
 		// 2D•`‰æŠJŽn
 		MAPIL::BeginRendering2DGraphics();
 
+		FontString s;
+		s.Set( "name" );
+		s.Draw( 60.0f, 20.0f, 0xFFAAFFAA );
+		s.Set( "progress" );
+		s.Draw( 280.0f, 20.0f, 0xFFAAFFAA );
+		s.Set( "score" );
+		s.Draw( 390.0f, 20.0f, 0xFFAAFFAA );
+		s.Set( "date" );
+		s.Draw( 500.0f, 20.0f, 0xFFAAFFAA );
+
 		for( int i = 0; i < 25; ++i ){
-			char strBase[ 160 ];
 			ScoreEntry se = p->m_pSaveDataManager->GetScoreEntry( i );
 			if( se.m_Used ){
 				int score = se.m_Score;
 				char progStr[ 40 ];
 				if( se.m_Progress == STAGE_PROGRESS_STAGE1 ){
-					sprintf( progStr, "Stage 1" );
+					sprintf( progStr, "Stage1" );
 				}
 				else if( se.m_Progress == STAGE_PROGRESS_COMPLETED ){
-					sprintf( progStr, "Complete" );
+					sprintf( progStr, "Comp" );
 				}
 				::tm* pDate = ::localtime( &se.m_Date );
-				sprintf( strBase, "%s , %s : %d %04d/%02d/%02d %02d:%02d:%02d", se.m_Name, progStr, se.m_Score,
-					pDate->tm_year + 1900, pDate->tm_mon + 1, pDate->tm_mday, pDate->tm_hour, pDate->tm_min, pDate->tm_sec );
-				MAPIL::DrawString( 200.0f, 10.0f + i * 16.0f, 0xFFFFFFFF, strBase );
+				s.Set( "%02d", i + 1 );
+				s.Draw( 20.0f, 50.0f + i * 16.0f );
+				s.Set( se.m_Name );
+				s.Draw( 60.0f, 50.0f + i * 16.0f );
+				s.Set( progStr );
+				s.Draw( 280.0f, 50.0f + i * 16.0f );
+				s.Set( "%d", se.m_Score );
+				s.Draw( 390.0f, 50.0f + i * 16.0f );
+				s.Set( "%d%02d%02d", pDate->tm_year + 1900, pDate->tm_mon + 1, pDate->tm_mday );
+				s.Draw( 500.0f, 50.0f + i * 16.0f );
 			}
 		}
 		

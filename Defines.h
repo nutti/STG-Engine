@@ -22,9 +22,6 @@
 
 #include <MAPIL/Util/CInterface.h>
 
-#pragma comment( lib, "MAPIL.lib" )
-#pragma comment( lib, "opengl32.lib" )
-#pragma comment( lib, "glu32.lib" )
 #pragma comment ( lib, "OpenAL32.lib" )
 
 

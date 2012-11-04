@@ -5,6 +5,7 @@
 
 #include "Scene.h"
 #include "NameEntry.h"
+#include "ShowReplay.h"
 
 
 namespace RTG
@@ -18,7 +19,8 @@ namespace RTG
 		int							m_NameLen;
 		int							m_FileNo;
 		bool						m_Selected;
-		char						m_EntryStr[ 25 ][ 256 ];
+		//char						m_EntryStr[ 25 ][ 256 ];
+		DispReplayEntry				m_Entry[ 25 ];
 		NameEntry					m_NameEntry;
 	public:
 		EntryReplay( int score, int progress );

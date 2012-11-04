@@ -26,9 +26,9 @@ namespace RTG
 		int				m_Camera3D;
 		int							m_Counter;
 		TaskList < MenuEffect1 >*	m_pEffect3DList;
-		int		m_BGM;
-		int		m_SelectSE;
-		int		m_MoveSE;
+		//int		m_BGM;
+		//int		m_SelectSE;
+		//int		m_MoveSE;
 		int							m_SelectedMenuItem;
 		NameEntry					m_NameEntry;
 		int							m_StateChangeCounter;			// 状態遷移専用カウンター

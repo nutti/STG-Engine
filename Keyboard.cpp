@@ -20,7 +20,7 @@ namespace RTG
 		MAPIL::GetKeyboardState( m_Keys );
 
 		for( int i = 0; i < 256; ++i ){
-			if( MAPIL::IsKeyPushed( m_Keys[ i ] ) ){
+			if( MAPIL::HasKeyPushedStatus( m_Keys[ i ] ) ){
 				if( m_PrevKeys[ i ] == KEY_STATE_ONCE ){
 					m_PrevKeys[ i ] = KEY_STATE_KEEP;
 				}

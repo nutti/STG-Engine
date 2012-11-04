@@ -1,7 +1,6 @@
 #include "Defines.h"
 #include "MainFrame.h"
 
-#pragma comment ( lib, "MAPIL.lib" )
 
 int WINAPI WinMain( HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmd, int nCmd )
 {

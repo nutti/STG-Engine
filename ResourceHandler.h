@@ -63,6 +63,14 @@ namespace RTG
 		RandomSeed							m_RdmSeed;
 
 		int									m_BossHPBar;
+		int									m_TitleTexture;
+		int									m_MenuTexture[ 10 ];
+		int									m_LoadingTexture;
+		int									m_GameFont[ 40 ];
+
+		int									m_MenuBGM;
+		int									m_MenuSelectSE;
+		int									m_MenuMoveSE;
 
 		int									m_Archiver;
 

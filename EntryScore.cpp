@@ -4,6 +4,7 @@
 #include "EntryReplay.h"
 #include "Menu.h"
 #include "GeneralButtonManager.h"
+#include "FontString.h"
 
 namespace RTG
 {
@@ -35,9 +36,11 @@ namespace RTG
 
 		if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_RIGHT ) ){
 			m_NameEntry.Advance( 1 );
+			MAPIL::PlayStaticBuffer( p->m_MenuMoveSE );
 		}
 		else if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_LEFT ) ){
 			m_NameEntry.Advance( -1 );
+			MAPIL::PlayStaticBuffer( p->m_MenuMoveSE );
 		}
 
 		// 名前入力
@@ -49,18 +52,21 @@ namespace RTG
 					p->m_pSaveDataManager->Save();
 				}
 				SetNextScene( new EntryReplay( m_Score, m_Progress ) );
+				MAPIL::PlayStaticBuffer( p->m_MenuSelectSE );
 			}
 			// 一文字消去
 			else if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_CANCEL ) ){
 				if( m_NameLen > 0 ){
 					m_Name[ m_NameLen - 1 ] = '\0';
 					--m_NameLen;
+					MAPIL::PlayStaticBuffer( p->m_MenuSelectSE );
 				}
 			}
 			else if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_BARRIER ) ){
 				m_Name[ m_NameLen ] = m_NameEntry.GetCurChar();
 				m_Name[ m_NameLen + 1 ] = '\0';
 				++m_NameLen;
+				MAPIL::PlayStaticBuffer( p->m_MenuSelectSE );
 			}
 		}
 		else if( m_NameLen == 15 ){
@@ -70,10 +76,12 @@ namespace RTG
 					p->m_pSaveDataManager->Save();
 				}
 				SetNextScene( new EntryReplay( m_Score, m_Progress ) );
+				MAPIL::PlayStaticBuffer( p->m_MenuSelectSE );
 			}
 			else if( p->m_pGBManager->IsPushedOnce( GENERAL_BUTTON_CANCEL ) ){
 				m_Name[ 14 ] = '\0';
 				--m_NameLen;
+				MAPIL::PlayStaticBuffer( p->m_MenuSelectSE );
 			}
 		}
 	}
@@ -84,16 +92,23 @@ namespace RTG
 		MAPIL::BeginRendering2DGraphics();
 
 		// 進捗状況の表示
-		char str[ 160 ];
-		char progStr[ 40 ];
+		std::string prog;
 		if( m_Progress == STAGE_PROGRESS_STAGE1 ){
-			strcpy( progStr, "Stage 1" );
+			prog = "stage1";
 		}
 		else if( m_Progress == STAGE_PROGRESS_COMPLETED ){
-			strcpy( progStr, "Complete" );
+			prog = "comp";
 		}
-		sprintf( str, "Name : %s Score : %d Progress : %s", m_Name, m_Score, progStr );
-		MAPIL::DrawString( 100.0f, 100.0f, 0xFFFFFFFF, str );
+		FontString s;
+		s.Set( "Entry score name" );
+		s.Draw( 60.0f, 100.0f, 0xFFAAFFAA );
+		s.Set( m_Name );
+		s.Draw( 60.0f, 200.0f );
+		s.Set( prog );
+		s.Draw( 280.0f, 200.0f );
+		s.Set( "%d", m_Score );
+		s.Draw( 390.0f, 200.0f );
+
 
 		// 2D描画終了
 		MAPIL::EndRendering2DGraphics();

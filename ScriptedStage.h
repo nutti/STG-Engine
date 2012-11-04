@@ -9,6 +9,7 @@
 #include "CircleEnemy.h"
 #include "CircleReflectedShot.h"
 #include "Effect2D.h"
+#include "Stage1Effect1.h"
 
 #include "StageVCPU.h"
 #include "ScriptType.h"
@@ -47,11 +48,13 @@ namespace RTG
 		typedef TaskList < CircleEnemyShot >		CircleEnemyShotList;
 		typedef TaskList < CircleReflectedShot >	CircleReflectedShotList;
 		typedef TaskList < Effect2D >				Effect2DList;
+		typedef TaskList < Stage1Effect1 >			Stage1Effect1List;
 		CirclePlayerList			m_PlayerList;			// プレイヤーリスト
 		CircleEnemyList				m_EnemyList;			// 敵リスト
 		CircleEnemyShotList			m_EnemyShotList;		// 敵弾リスト
 		CircleReflectedShotList		m_ReflectedShotList;	// 反射弾リスト
 		Effect2DList				m_Effect2DList;			// 2Dエフェクトリスト
+		Stage1Effect1List			m_Stage1EffectList;		// ポイントスプライトリスト
 
 		
 		ResourceScriptData			m_ResourceScriptData;		// スクリプトデータ（リソース）
@@ -60,8 +63,10 @@ namespace RTG
 		int							m_ReflectSE;
 		int							m_BombbedSE;
 		int							m_StageBGM;
-
 		int							m_BGTexture[ 2 ];
+		int							m_PointSprite;
+		int							m_PointSpriteTexture;
+		int							m_PointSpriteCamera;
 
 		int							m_ReflectTotal;
 		int							m_KillTotal;
@@ -78,6 +83,7 @@ namespace RTG
 		void UpdateEnemyShot();					// 敵の弾の情報を更新
 		void UpdateReflectedShot();				// 反射弾の情報を更新
 		void UpdateEffect2D();					// エフェクトの更新
+		void UpdateStage1Effect();				// ポイントスプライトエフェクトの更新
 		void CollidePlayerAndEnemy();			// プレイヤーと敵との衝突判定
 		void CollideEnemyAndReflectedShot();	// 敵と反射弾との衝突判定
 	public:

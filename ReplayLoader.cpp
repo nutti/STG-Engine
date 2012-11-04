@@ -21,12 +21,12 @@ namespace RTG
 		m_EntryTotal = 0;
 	}
 
-	void ReplayLoader::Load( const char* pFileName )
+	int ReplayLoader::Load( const char* pFileName )
 	{
 		std::ifstream fIn( pFileName, std::ios::binary | std::ios::in );
 
 		if( !fIn ){
-			return;
+			return -1;
 		}
 
 		// Šeíî•ñ“Ç‚İ‚İ
@@ -59,6 +59,8 @@ namespace RTG
 
 		MAPIL::SafeDeleteArray( pComp );
 		MAPIL::SafeDeleteArray( pRaw );
+
+		return 0;
 	}
 
 	void ReplayLoader::Open( const char* pFileName )

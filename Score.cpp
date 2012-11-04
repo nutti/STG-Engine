@@ -1,4 +1,5 @@
 #include "Score.h"
+#include "FontString.h"
 
 namespace RTG
 {
@@ -17,11 +18,13 @@ namespace RTG
 
 	void Score::Display( float x, float y, float offset, int digit ) const
 	{
-		int dispScore = m_Score;
-		for( int i = 0; i < digit; ++i ){
-			m_MAPILString.Display( ( dispScore % 10 ) + '0', x - i * offset, y );
-			dispScore /= 10;
-		}
+		MAPIL::BeginRendering2DGraphics();
+		FontString s;
+		char str[ 10 ];
+		sprintf( str, "%%0%dd", digit );
+		s.Set( str, m_Score );
+		s.Draw( x, y, 0.5f, 0xFFFFDDAA );
+		MAPIL::EndRendering2DGraphics();
 	}
 
 	void Score::Add( int score )

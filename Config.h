@@ -14,8 +14,8 @@ namespace RTG
 		{
 			CONFIG_MENU_SE_VOLUME		= 0,
 			CONFIG_MENU_BGM_VOLUME		= 1,
-			CONFIG_MENU_BUTTON			= 2,
-			CONFIG_MENU_EXIT			= 3,
+			CONFIG_MENU_BUTTON			= 100,
+			CONFIG_MENU_EXIT			= 2,
 		};
 		enum ButtonSelect
 		{

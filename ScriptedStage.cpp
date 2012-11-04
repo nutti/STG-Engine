@@ -32,6 +32,7 @@ namespace RTG
 																							m_EnemyShotList(),
 																							m_ReflectedShotList(),
 																							m_Effect2DList(),
+																							m_Stage1EffectList(),
 																							m_StageNo( stage ),
 																							m_KillTotal( 0 ),
 																							m_ReflectTotal( 0 ),
@@ -70,7 +71,9 @@ namespace RTG
 		ResourceHandler::GetInst()->ReleaseAllStageResources();
 		MAPIL::DeleteTexture( m_BGTexture[ 0 ] );
 		MAPIL::DeleteTexture( m_BGTexture[ 1 ] );
-		//MAPIL::DeleteStreamingBuffer( m_StageBGM );
+		MAPIL::DeleteTexture( m_PointSpriteTexture );
+		MAPIL::DeletePointSprite( m_PointSprite );
+		MAPIL::DeleteCamera( m_PointSpriteCamera );
 	}
 
 	void ScriptedStage::Update()
@@ -86,6 +89,7 @@ namespace RTG
 			UpdateEnemyShot();				// 敵の弾の情報を更新
 			UpdateReflectedShot();			// 反射弾の情報を更新
 			UpdateEffect2D();				// エフェクトの更新
+			UpdateStage1Effect();			// ポイントスプライトエフェクトの更新
 			CollidePlayerAndEnemy();		// プレイヤーと敵衝突判定
 			CollideEnemyAndReflectedShot();	// 敵と反射弾との衝突判定
 
@@ -101,14 +105,7 @@ namespace RTG
 
 			// スコア更新/表示
 			p->m_pScore->Update();
-			p->m_pScore->Display( 200.0f, 20.0f, 16.0f, 10 );
-
-			// フレーム数表示
-			//Score frame;
-			//frame.Set( m_Frame );
-			//frame.Display( 580.0f, 20.0f, 16.0f, 6 );
-
-			
+			p->m_pScore->Display( 70.0f, 20.0f, 16.0f, 10 );
 
 			// フレーム数更新
 			++m_Frame;
@@ -259,6 +256,28 @@ namespace RTG
 		for( it.Begin(); it != itEnd; ++it ){
 			if( !( *it ).Update() ){
 				it.Remove();
+			}
+		}
+	}
+
+	void ScriptedStage::UpdateStage1Effect()
+	{
+		Stage1Effect1List::Iterator it( &m_Stage1EffectList );
+		Stage1Effect1List::Iterator itEnd( &m_Stage1EffectList );
+		itEnd.End();
+
+		// 反射弾の情報を更新
+		for( it.Begin(); it != itEnd; ++it ){
+			if( !( *it ).Update() ){
+				int index = ( *it ).GetIndex();
+					it.Remove();
+					m_Stage1EffectList.Add( new Stage1Effect1(	m_PointSprite,
+																MAPIL::Vector3 < float > (	-5.0f + 10.0f * rand() / RAND_MAX,
+																						-1.0f - 6.0f * rand() / RAND_MAX,
+																						-1.0f - 30.0f * rand() / RAND_MAX ),
+																						-0.01 - 0.1 * rand() / RAND_MAX,
+																						MAPIL::DegToRad( -70.0 - 40.0 * rand() / RAND_MAX ),
+																						index ) );
 			}
 		}
 	}
@@ -523,7 +542,14 @@ namespace RTG
 			MAPIL::DrawPolygon3D( fmt, 2, m_BGTexture[ 1 ] );
 		}
 
+		
+
 		MAPIL::DisableFog();
+
+		MAPIL::DisableZBuffering();
+		MAPIL::EnableCamera( m_PointSpriteCamera );
+		MAPIL::DrawPointSprite( m_PointSprite );
+		MAPIL::EnableZBuffering();
 	}
 
 	void ScriptedStage::Init()
@@ -542,6 +568,7 @@ namespace RTG
 		m_EnemyShotList.Init();
 		m_ReflectedShotList.Init();
 		m_Effect2DList.Init();
+		m_Stage1EffectList.Init();
 
 		// プレイヤーの作成
 		NormalPlayer* pNewPlayer = new NormalPlayer( MAPIL::Vector2 < double > ( 320.0, 430.0f ) );
@@ -553,6 +580,28 @@ namespace RTG
 		m_BombbedSE = MAPIL::CreateStaticBuffer( p->m_Archiver, "archive/resource/se/rtg_se2.wav" );
 		m_BGTexture[ 0 ] = MAPIL::CreateTexture( p->m_Archiver, "archive/resource/texture/Background1.png" );
 		m_BGTexture[ 1 ] = MAPIL::CreateTexture( p->m_Archiver, "archive/resource/texture/Background2.png" );
+		m_PointSpriteTexture = MAPIL::CreateTexture( p->m_Archiver, "archive/resource/texture/Stage1BackgroundEffect.png" );
+		m_PointSprite = MAPIL::CreatePointSprite( 200, m_PointSpriteTexture );
+		m_PointSpriteCamera = MAPIL::CreateCamera();
+
+		// バックグラウンドエフェクトの構築
+		for( int i = 0; i < 200; ++i ){
+			m_Stage1EffectList.Add(	new Stage1Effect1(	m_PointSprite,
+															MAPIL::Vector3 < float > (	-5.0f + 10.0f * rand() / RAND_MAX,
+																						-1.0f - 6.0f * rand() / RAND_MAX,
+																						-1.0f - 30.0f * rand() / RAND_MAX ),
+																						-0.01 - 0.1 * rand() / RAND_MAX,
+																						MAPIL::DegToRad( -70.0 - 40.0 * rand() / RAND_MAX ),
+																						i ) );
+		}
+		MAPIL::SetCameraViewTrans(	m_PointSpriteCamera,
+									0.0f, 0.0f, 10.0f,
+									0.0f, 0.0f, 0.0f,
+									0.0f, 1.0f, 0.0f );
+		MAPIL::SetCameraProjTrans(	m_PointSpriteCamera,
+									static_cast < float > ( MAPIL::DegToRad( 30.0 ) ),
+									640 * 1.0f / 480.0f,
+									0.01f, 20.0f );
 
 		// ステージ情報の設定
 		MAPIL::ZeroObject( &m_StageInfo, sizeof( m_StageInfo ) );

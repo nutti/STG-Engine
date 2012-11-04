@@ -2,7 +2,7 @@
 #define INCLUDED_COMPILER_H
 
 
-#define _DEBUG
+//#define _DEBUG
 
 #include "Parser.hh"
 #include "VM.h"
